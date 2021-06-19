@@ -12,4 +12,6 @@ namespace Venom
 
     void Run();
   };
+
+  Application* CreateApplication(); // TO BE DEFINED IN CLIENT
 } // namespace Venom
