@@ -7,4 +7,5 @@ add_library(${PROJECT_NAME} SHARED
     src/Venom/Core/Core.h
     src/Venom/Core/Application.h
     src/Venom/Core/Application.cpp
+    src/Venom/Core/EntryPoint.h
 )
