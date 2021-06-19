@@ -8,10 +8,13 @@ add_library(${PROJECT_NAME} SHARED
     src/Venom/Core/Core.h
     src/Venom/Core/Application.h
     src/Venom/Core/Application.cpp
+    src/Venom/Core/Log.h
+    src/Venom/Core/Log.cpp
     src/Venom/Core/EntryPoint.h
 )
 
 # Linking spdlog with Venom-Engine lib
 set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Build shared library" FORCE) # Setting the build flag
 add_subdirectory(ext/spdlog)                                        # Adding subdirectory
-target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)       # Linking dynamic library
+target_include_directories(${PROJECT_NAME} PUBLIC ./ext)
+target_link_libraries(${PROJECT_NAME} spdlog::spdlog)       # Linking dynamic library
