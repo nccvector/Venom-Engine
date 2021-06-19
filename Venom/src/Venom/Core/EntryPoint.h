@@ -5,7 +5,8 @@ extern Venom::Application* Venom::CreateApplication();
 
 int main()
 {
-  std::cout << "Venom Engine Started" << std::endl;
+  Venom::Log::Init();
+
   auto app = Venom::CreateApplication();
   app->Run();
   delete app;
