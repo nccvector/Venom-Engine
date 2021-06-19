@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(Venom VERSION 0.1)
 
+# Making Venom-Engine as a library
 add_library(${PROJECT_NAME} SHARED 
     src/Venom.h 
     src/Venom/Core/Core.h
@@ -9,3 +10,8 @@ add_library(${PROJECT_NAME} SHARED
     src/Venom/Core/Application.cpp
     src/Venom/Core/EntryPoint.h
 )
+
+# Linking spdlog with Venom-Engine lib
+set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Build shared library" FORCE) # Setting the build flag
+add_subdirectory(ext/spdlog)                                        # Adding subdirectory
+target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog)       # Linking dynamic library
