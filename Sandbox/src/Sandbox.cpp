@@ -1,5 +1,10 @@
-#include "Venom.h"
+#include <Venom.h>
 
+/*
+This is an example of a client application
+*/
+
+// Inheriting the VenomEngine Application
 class Sandbox : public Venom::Application
 {
   public:
@@ -14,9 +19,9 @@ class Sandbox : public Venom::Application
   }
 };
 
-int main()
+// Implementing the client function, which passes this application instance
+// to VenomEngine EntryPoint
+Venom::Application* Venom::CreateApplication()
 {
-  Sandbox* sandbox = new Sandbox();
-  sandbox->Run();
-  delete sandbox;
+  return new Sandbox();
 }
