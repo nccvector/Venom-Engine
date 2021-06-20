@@ -19,4 +19,14 @@ namespace Venom
     static std::shared_ptr<spdlog::logger> s_CoreLogger;
     static std::shared_ptr<spdlog::logger> s_ClientLogger;
   };
+
+  // Venom-Engine Core Logging Functions
+  void CoreLogInfo(std::string msg);
+  void CoreLogWarn(std::string msg);
+  void CoreLogError(std::string msg);
+
+  // Venom-Engine App Logging Functions
+  void LogInfo(std::string msg);
+  void LogWarn(std::string msg);
+  void LogError(std::string msg);
 }
