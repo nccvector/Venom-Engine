@@ -1,3 +1,0 @@
-[submodule "Venom/ext/spdlog"]
-	path = Venom/ext/spdlog
-	url = https://github.com/gabime/spdlog.git
