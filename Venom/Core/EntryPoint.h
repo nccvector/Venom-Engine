@@ -1,28 +1,30 @@
-#include <iostream>
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
+#pragma once
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+// Creating an application instance
+Venom::Application* Venom::CreateApplication()
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
+  return new Application();
 }
 
 int main()
 {
+  Venom::Log::Init(); // INITIALIZING LOG IMPORTANT!!!
+
+  Venom::LogInfo("Initializing glfw");
+
   if (!glfwInit())
   {
       // Handle initialization failure
-      std::cout << "GOT FAILED :(";
+      Venom::LogError("glfwInit() Failed");
   }
 
-  std::cout << "GOT INIT :)";
+  // std::cout << "GOT INIT :)";
 
   GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
   if (!window)
   {
       // Window or OpenGL context creation failed
-      std::cout << "WINDOW CREATION FAILED";
+      Venom::LogError("Window Creation Failed");
   }
 
   // Setting the current context
@@ -43,6 +45,10 @@ int main()
   // Terminating the glfw
   glfwDestroyWindow(window);
   glfwTerminate();
+
+  // auto app = Venom::CreateApplication();
+  // app->Run();
+  // delete app;
 
   return 0;
 }

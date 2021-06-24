@@ -5,13 +5,23 @@ project(VenomEngine VERSION 0.1)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Making Venom-Engine as a library
+add_executable(${PROJECT_NAME}
+    Venom/Core/Application.cpp
+    Venom/Core/Log.cpp
+)
+
+target_include_directories(Venom)
+
+# Adding spdlog
+set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Build shared library" FORCE) # Setting the build flag
+add_subdirectory(ext/spdlog)
+target_link_libraries(${PROJECT_NAME} spdlog::spdlog)       # Linking dynamic library
+
 # Adding glfw
 add_subdirectory(ext/glfw)
-link_libraries(glfw)
-
-# Adding src
-add_subdirectory(src)
-
+# link_libraries(glfw)
+target_link_libraries(${PROJECT_NAME} glfw)       # Linking dynamic library
 
 # # Linking spdlog with Venom-Engine lib
 # set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Build shared library" FORCE) # Setting the build flag

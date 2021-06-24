@@ -1,4 +1,5 @@
-#include <Window.h>
+#include "Core/Window.h"
+#include "Log.h"
 
 namespace Venom
 {
@@ -11,7 +12,7 @@ namespace Venom
 
   // PUBLIC FUNCTIONS
   // Returns a window pointer
-  Window *Window::Get()
+  Window* Window::Get()
   {
     if (Window::window == NULL)
     {
@@ -24,6 +25,7 @@ namespace Venom
 
   void Window::Run()
   {
+
     Window::Init();
     Window::Loop();
   }
