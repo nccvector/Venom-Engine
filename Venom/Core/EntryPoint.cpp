@@ -1,10 +1,10 @@
 #include "Core/Log.h"
 #include "Core/Window.h"
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 int main()
@@ -14,17 +14,17 @@ int main()
 
   if (!glfwInit())
   {
-      // Handle initialization failure
-      Venom::LogError("glfw initialization failed!");
+    // Handle initialization failure
+    Venom::LogError("glfw initialization failed!");
   }
 
   Venom::LogInfo("Successfully initialized glfw");
 
-  GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
+  GLFWwindow *window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
   if (!window)
   {
-      // Window or OpenGL context creation failed
-      Venom::LogError("Failed to create a window");
+    // Window or OpenGL context creation failed
+    Venom::LogError("Failed to create a window");
   }
 
   Venom::LogInfo("Window Creation Successful");
@@ -38,9 +38,9 @@ int main()
   // Simulation loop
   while (!glfwWindowShouldClose(window))
   {
-      // Keep running
-      glfwSwapBuffers(window);
-      glfwPollEvents();
+    // Keep running
+    glfwSwapBuffers(window);
+    glfwPollEvents();
   }
 
   // Terminating the glfw
