@@ -1,9 +1,10 @@
-#pragma once
+#include "Core/Log.h"
+#include "Core/Window.h"
 
-// Creating an application instance
-Venom::Application* Venom::CreateApplication()
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-  return new Application();
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 int main()
