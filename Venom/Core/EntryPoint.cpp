@@ -10,23 +10,24 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 int main()
 {
   Venom::Log::Init(); // INITIALIZING LOG IMPORTANT!!!
-
-  Venom::LogInfo("Initializing glfw");
+  Venom::LogInfo("Initializing glfw...");
 
   if (!glfwInit())
   {
       // Handle initialization failure
-      Venom::LogError("glfwInit() Failed");
+      Venom::LogError("glfw initialization failed!");
   }
 
-  // std::cout << "GOT INIT :)";
+  Venom::LogInfo("Successfully initialized glfw");
 
   GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
   if (!window)
   {
       // Window or OpenGL context creation failed
-      Venom::LogError("Window Creation Failed");
+      Venom::LogError("Failed to create a window");
   }
+
+  Venom::LogInfo("Window Creation Successful");
 
   // Setting the current context
   glfwMakeContextCurrent(window);
@@ -38,7 +39,6 @@ int main()
   while (!glfwWindowShouldClose(window))
   {
       // Keep running
-
       glfwSwapBuffers(window);
       glfwPollEvents();
   }
