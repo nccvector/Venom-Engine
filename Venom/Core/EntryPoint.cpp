@@ -47,9 +47,5 @@ int main()
   glfwDestroyWindow(window);
   glfwTerminate();
 
-  // auto app = Venom::CreateApplication();
-  // app->Run();
-  // delete app;
-
   return 0;
 }
