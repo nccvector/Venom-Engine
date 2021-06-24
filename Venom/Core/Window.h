@@ -23,6 +23,7 @@ namespace Venom
       {
         // Creating an instance if null
         window = new Window();
+        Venom::LogInfo("Created a new Window instance");
       }
 
       return window;
@@ -43,7 +44,8 @@ namespace Venom
       // Initialize glfw
       if (!glfwInit())
       {
-        // Implement logging here
+        // Handle initialization failure
+        Venom::LogError("glfw initialization failed!");
         throw std::invalid_argument("Cannot initialize glfw");
       }
 
@@ -69,7 +71,7 @@ namespace Venom
     {
       Window::Width = 640;
       Window::Height = 480;
-      Window::Title = "My Application";
+      Window::Title = "Venom Engine";
 
       // Must start with NULL
       Window::window = NULL;
