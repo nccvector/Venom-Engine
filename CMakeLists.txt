@@ -7,11 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Making Venom-Engine as a library
 add_executable(${PROJECT_NAME}
-    Venom/Core/Application.cpp
+    Venom/Core/EntryPoint.cpp
     Venom/Core/Log.cpp
 )
 
-target_include_directories(Venom)
+# Adding Venom as an include directory
+target_include_directories(${PROJECT_NAME} PUBLIC Venom)
 
 # Adding spdlog
 set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Build shared library" FORCE) # Setting the build flag
