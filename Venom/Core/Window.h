@@ -10,72 +10,102 @@ namespace Venom
   // Namespace functions
   void error_callback(int code, const char *description)
   {
-    // TODO Implement logging here
+    Venom::LogError(description);
     throw std::invalid_argument(description);
+  }
+
+  static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+  {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+      glfwSetWindowShouldClose(window, GLFW_TRUE);
   }
 
   class Window
   {
   public:
-    static Window *Get()
+    // Constructor
+    Window()
     {
-      if (window == NULL)
-      {
-        // Creating an instance if null
-        window = new Window();
-        Venom::LogInfo("Created a new Window instance");
-      }
+      Width = 640;
+      Height = 480;
+      Title = "Venom Engine";
 
-      return window;
+      // Must start with NULL
+      window = NULL;
     }
 
-    static void Run()
+    void Run()
     {
-
       Window::Init();
       Window::Loop();
     }
 
-    static void Init()
+    void Init()
     {
-      // Attaching error callback for logging
-      glfwSetErrorCallback(error_callback);
+      Venom::LogInfo("Initializing glfw...");
 
-      // Initialize glfw
       if (!glfwInit())
       {
         // Handle initialization failure
         Venom::LogError("glfw initialization failed!");
-        throw std::invalid_argument("Cannot initialize glfw");
       }
 
       // Configure glfw
       glfwDefaultWindowHints();
-      glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+      glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+
+      Venom::LogInfo("Successfully initialized glfw");
+
+      // Creating a window instance
+      window = glfwCreateWindow(Width, Height, Title, NULL, NULL);
+      if (!window)
+      {
+        // Window or OpenGL context creation failed
+        Venom::LogError("Failed to create a window");
+      }
+
+      Venom::LogInfo("Window Creation Successful");
+
+      // Setting the current context
+      glfwMakeContextCurrent(window);
+
+      // Setting the input callbacks
+      glfwSetKeyCallback(window, key_callback);
+
+      // Attaching error callback for logging
+      glfwSetErrorCallback(error_callback);
     }
 
-    static void Loop()
+    void Loop()
     {
+      // Simulation loop
+      Venom::LogInfo("Starting Window loop");
+      while (!glfwWindowShouldClose(window))
+      {
+        // Keep running
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+      }
+
+      // Cleanup on exit
+      Venom::LogInfo("Destroying window");
+      Destroy();
+    }
+
+    void Destroy()
+    {
+      // Terminating the glfw
+      glfwDestroyWindow(window);
+      glfwTerminate();
     }
 
   private:
     unsigned int Width;
     unsigned int Height;
-    std::string Title;
+    const char *Title;
 
     // Window pointer
-    static Window *window;
-
-    // Constructor
-    Window()
-    {
-      Window::Width = 640;
-      Window::Height = 480;
-      Window::Title = "Venom Engine";
-
-      // Must start with NULL
-      Window::window = NULL;
-    }
+    GLFWwindow *window;
   };
 
 }
