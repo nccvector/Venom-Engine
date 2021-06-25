@@ -1,9 +1,8 @@
 #pragma once
 
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#include <string>
-
-#include "Log.h"
+#include <glad/glad.h>
 
 namespace Venom
 {
@@ -69,6 +68,8 @@ namespace Venom
       // Setting the current context
       glfwMakeContextCurrent(window);
 
+      gladLoadGL();
+
       // Setting the input callbacks
       glfwSetKeyCallback(window, key_callback);
 
@@ -82,8 +83,20 @@ namespace Venom
       Venom::LogInfo("Starting Window loop");
       while (!glfwWindowShouldClose(window))
       {
-        // Keep running
+        // Render here...
+        float ratio;
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+        ratio = width / (float) height;
+ 
+        glViewport(0, 0, width, height);
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // Swap front and back buffers
         glfwSwapBuffers(window);
+        
+        // Poll for and process events
         glfwPollEvents();
       }
 

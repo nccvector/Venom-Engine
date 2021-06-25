@@ -17,12 +17,15 @@ target_include_directories(${PROJECT_NAME} PUBLIC Venom)
 # Adding spdlog
 set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Build shared library" FORCE) # Setting the build flag
 add_subdirectory(ext/spdlog)
-target_link_libraries(${PROJECT_NAME} spdlog::spdlog)       # Linking dynamic library
+target_link_libraries(${PROJECT_NAME} spdlog::spdlog)
 
 # Adding glfw
 add_subdirectory(ext/glfw)
-# link_libraries(glfw)
-target_link_libraries(${PROJECT_NAME} glfw)       # Linking dynamic library
+target_link_libraries(${PROJECT_NAME} glfw)
+
+# Adding glfw
+add_subdirectory(ext/glad)
+target_link_libraries(${PROJECT_NAME} glad)
 
 # # Linking spdlog with Venom-Engine lib
 # set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Build shared library" FORCE) # Setting the build flag
