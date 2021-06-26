@@ -7,9 +7,23 @@ int main()
 
   // Creating a new Window
   Venom::Window *window = new Venom::Window();
+  window->Init();
 
-  // Running the window
-  window->Run();
+  // Simulation loop
+  Venom::LogInfo("Starting the loop");
+  while (!glfwWindowShouldClose(window->Get()))
+  {
+    // Render here...
+    
+
+    // Swap front and back buffers
+    glfwSwapBuffers(window->Get());
+    
+    // Poll for and process events
+    glfwPollEvents();
+  }
+
+  delete(window);
 
   return 0;
 }
