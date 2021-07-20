@@ -1,15 +1,12 @@
-[submodule "ext/corrade"]
-	path = ext/corrade
-	url = https://github.com/mosra/corrade
-
 [submodule "ext/imgui"]
 	path = ext/imgui
-	url = https://github.com/ocornut/imgui/tree/docking
-
+	url = https://github.com/ocornut/imgui.git
 [submodule "ext/magnum"]
 	path = ext/magnum
-	url = https://github.com/mosra/magnum
-
+	url = https://github.com/mosra/magnum.git
 [submodule "ext/magnum-integration"]
 	path = ext/magnum-integration
-    url = https://github.com/mosra/magnum-integration
+	url = https://github.com/mosra/magnum-integration.git
+[submodule "ext/corrade"]
+	path = ext/corrade
+	url = https://github.com/mosra/corrade.git
