@@ -1,32 +1,64 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.4)
+project(VenomEngine)
 
-project(VenomEngine VERSION 0.1)
+set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/ext/imgui" ${CMAKE_PREFIX_PATH})
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/ext/modules" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/ext/magnum-integration/modules" ${CMAKE_MODULE_PATH})
 
-# Making Venom-Engine as a library
+set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
+
+# SETTING IMGUI OPTION
+set(WITH_IMGUI ON CACHE BOOL "" FORCE) # Magnum integration
+# set(WITH_SDL2APPLICATION ON CACHE BOOL "" FORCE)
+set(WITH_GLFWAPPLICATION ON CACHE BOOL "" FORCE)
+
+# Add Corrade as a subproject
+add_subdirectory(ext/corrade EXCLUDE_FROM_ALL)
+add_subdirectory(ext/magnum EXCLUDE_FROM_ALL)
+add_subdirectory(ext/magnum-integration EXCLUDE_FROM_ALL)
+
+## Adding ImGuizmo and include folder
+include_directories(${PROJECT_SOURCE_DIR}/ext/ImGuizmo)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+
+# FINDING AND LINKING
+find_package(Corrade REQUIRED Main)
+find_package(Magnum REQUIRED
+    GL
+    GlfwApplication
+    MeshTools
+    Primitives
+    SceneGraph
+    Shaders
+)
+find_package(MagnumIntegration REQUIRED ImGui)
+
+# Getting files from include
+file(GLOB_RECURSE INCLUDE_H_FILES ${PROJECT_SOURCE_DIR}/include/*.h)
+file(GLOB_RECURSE INCLUDE_CPP_FILES ${PROJECT_SOURCE_DIR}/include/*.cpp)
+file(GLOB_RECURSE SRC_H_FILES ${PROJECT_SOURCE_DIR}/src/*.h)
+file(GLOB_RECURSE SRC_CPP_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+
+# CREATING EXECUTABLE
 add_executable(${PROJECT_NAME}
-    Venom/Core/EntryPoint.cpp
-    Venom/Core/Log.cpp
+    ${PROJECT_SOURCE_DIR}/ext/ImGuizmo/ImGuizmo.cpp
+    ${INCLUDE_H_FILES}
+    ${SRC_H_FILES}
+    ${INCLUDE_CPP_FILES}
+    ${SRC_CPP_FILES}
 )
 
-# Adding Venom as an include directory
-target_include_directories(${PROJECT_NAME} PUBLIC Venom)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    Corrade::Main
+    Magnum::Application
+    Magnum::GL
+    Magnum::Magnum
+    Magnum::MeshTools
+    Magnum::Primitives
+    Magnum::SceneGraph
+    Magnum::Shaders
+    MagnumIntegration::ImGui
+)
 
-# Adding spdlog
-set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Build shared library" FORCE) # Setting the build flag
-add_subdirectory(ext/spdlog)
-target_link_libraries(${PROJECT_NAME} spdlog::spdlog)
-
-# Adding glfw
-add_subdirectory(ext/glfw)
-target_link_libraries(${PROJECT_NAME} glfw)
-
-# Adding glfw
-add_subdirectory(ext/glad)
-target_link_libraries(${PROJECT_NAME} glad)
-
-# # Linking spdlog with Venom-Engine lib
-# set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Build shared library" FORCE) # Setting the build flag
-# add_subdirectory(ext/spdlog) 
+# add_subdirectory(src)
