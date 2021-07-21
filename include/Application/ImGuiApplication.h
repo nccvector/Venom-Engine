@@ -26,6 +26,7 @@ public:
                               const Vector2i& defaultWindowSize = Vector2i{ 1920, 1080 });
 
 protected:
+    void SetDarkThemeColors();
     void viewportEvent(ViewportEvent& event) override;
     void keyPressEvent(KeyEvent& event) override;
     void keyReleaseEvent(KeyEvent& event) override;
