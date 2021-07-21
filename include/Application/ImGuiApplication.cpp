@@ -36,7 +36,7 @@ ImGuiApplication::ImGuiApplication(const std::string& title, const Arguments& ar
     //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
     // SETTING DEFAULT FONT
-    io.Fonts->AddFontFromFileTTF("/home/vector/cpp-projects/Venom-Engine/assets/fonts/OpenSans-Regular.ttf", 18.0f);
+    io.Fonts->AddFontFromFileTTF("../assets/fonts/OpenSans-Regular.ttf", 18.0f);
     io.FontDefault = io.Fonts->Fonts[1];
     m_ImGuiContext.relayout(Vector2{ windowSize() } / dpiScaling(),
                                                windowSize(), framebufferSize());
