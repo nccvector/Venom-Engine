@@ -29,10 +29,6 @@ PickableApplication::PickableApplication(const std::string& title, const Argumen
     ImGuiApplication{title, arguments, defaultWindowSize} {
     /* Relayout ImGuizmo */
     ImGuiIO& io = ImGui::GetIO();
-
-    // SETTING CONFIG FLAGS FOR DOCKING ### ADDED LATER
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
     ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
     /* Setup buffers */

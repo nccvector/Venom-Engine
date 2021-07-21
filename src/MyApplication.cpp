@@ -86,7 +86,7 @@ void MyApplication::drawEvent() {
     if(selectedPoint) {
         if(selectedPoint->isSelectable()
            && selectedPoint->isMovable()) {
-            ImGui::Begin("Editor");
+            ImGui::Begin("Transform");
             std::string str = "Point: #" + std::to_string(selectedPoint->idx());
             ImGui::Text("%s", str.c_str());
             ImGui::Separator();
