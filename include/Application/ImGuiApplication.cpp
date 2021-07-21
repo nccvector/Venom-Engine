@@ -25,23 +25,9 @@ ImGuiApplication::ImGuiApplication(const std::string& title, const Arguments& ar
     /* Setup ImGui and ImGuizmo */
     m_ImGuiContext = ImGuiIntegration::Context(Vector2{ windowSize() } / dpiScaling(),
                                                windowSize(), framebufferSize());
-    
-    // SETTING CONFIG FLAGS FOR DOCKING ### ADDED LATER
+
     ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
-
-    // SETTING DEFAULT FONT
-    io.Fonts->AddFontFromFileTTF("../assets/fonts/OpenSans-Regular.ttf", 18.0f);
-    io.FontDefault = io.Fonts->Fonts[1];
-    m_ImGuiContext.relayout(Vector2{ windowSize() } / dpiScaling(),
-                                               windowSize(), framebufferSize());
-
-    ImGui::StyleColorsDark();
+    // ImGui::StyleColorsDark(); // Being set by a function below
 
     // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
     ImGuiStyle& style = ImGui::GetStyle();
@@ -51,6 +37,7 @@ ImGuiApplication::ImGuiApplication(const std::string& title, const Arguments& ar
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
+    // SETTING DARK THEME
     SetDarkThemeColors();
 
     /* Setup proper blending to be used by ImGui. There's a great chance
