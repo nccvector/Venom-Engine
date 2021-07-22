@@ -22,7 +22,7 @@ void EndDockspace();
 // In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)
 static void HelpMarker(const char* desc);
 ImGuizmo::OPERATION m_CurrentGizmoOperation{ImGuizmo::TRANSLATE};
-ImGuizmo::MODE m_CurrentGuizmoMode{ImGuizmo::WORLD};
+ImGuizmo::MODE m_CurrentGuizmoMode{ImGuizmo::LOCAL};
 
 /****************************************************************************************************/
 VenomApplication::VenomApplication(const Arguments& arguments,
@@ -309,20 +309,22 @@ bool VenomApplication::editPointTransformation(PickableObject* object) {
     Vector3 translation = object->translation();
     Vector3 scale = object->scaling();
     Vector3 eulerAngles = Vector3(object->rotation().toEuler());
-    eulerAngles *= 180.0f / M_PI;
+    Vector3 eulerAnglesDegrees = eulerAngles * 180.0f / M_PI;
 
-    bool bEdited = ImGui::InputFloat3("Position", translation.data(), "%.4f", 3);
-    bEdited |= ImGui::InputFloat3("Rotation", eulerAngles.data(), "%.4f", 3);
-    bEdited |= ImGui::InputFloat3("Scale", scale.data(), "%.4f", 3);
+    bool bEdited = ImGui::DragFloat3("Position", translation.data(), 0.05f);
+    bEdited |= ImGui::DragFloat3("Rotation", eulerAnglesDegrees.data(), 1.0f);
+    bEdited |= ImGui::DragFloat3("Scale", scale.data(), 0.01f, 0.0001f, 1000000.0f, "%.3f");
 
-    object->setTranslation(translation);
+    object->translateLocal(object->rotation().toMatrix() * (translation - object->translation()));
     object->setScaling(scale);
-    Rad ax{eulerAngles.data()[0] * (float)M_PI / 180.0f};
-    Rad ay{eulerAngles.data()[1] * (float)M_PI / 180.0f};
-    Rad az{eulerAngles.data()[2] * (float)M_PI / 180.0f};
-    Matrix4 frot = Matrix4::rotationZ(az) * Matrix4::rotationY(ay) * Matrix4::rotationX(ax);
-    object->setRotation(Quaternion::fromMatrix(Matrix3(frot)));
+    Rad ax{eulerAnglesDegrees.data()[0] * (float)M_PI / 180.0f - eulerAngles.data()[0]};
+    Rad ay{eulerAnglesDegrees.data()[1] * (float)M_PI / 180.0f - eulerAngles.data()[1]};
+    Rad az{eulerAnglesDegrees.data()[2] * (float)M_PI / 180.0f - eulerAngles.data()[2]};
 
+    object->rotateXLocal(ax);
+    object->rotateYLocal(ay);
+    object->rotateZLocal(az);
+    
     // APPLYING GIZMO TRANSFORMS
 
     Matrix4 tempTrans = object->transformation();
