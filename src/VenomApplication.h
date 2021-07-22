@@ -16,9 +16,9 @@
 #include <unordered_map>
 
 /****************************************************************************************************/
-class MyApplication final : public GLApplication  {
+class VenomApplication final : public GLApplication  {
 public:
-    explicit MyApplication(const Arguments& arguments, 
+    explicit VenomApplication(const Arguments& arguments, 
                             size_t indexDataSize = 16, 
                             const Vector2i& defaultWindowSize = Vector2i{ 1920, 1080 });
 
@@ -67,4 +67,4 @@ protected:
 };
 
 /****************************************************************************************************/
-MAGNUM_APPLICATION_MAIN(MyApplication)
+MAGNUM_APPLICATION_MAIN(VenomApplication)
