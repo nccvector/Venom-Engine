@@ -20,7 +20,7 @@ add_subdirectory(ext/magnum-integration EXCLUDE_FROM_ALL)
 
 ## Adding ImGuizmo and include folder
 include_directories(${PROJECT_SOURCE_DIR}/ext/ImGuizmo)
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/src)
 
 # FINDING AND LINKING
 find_package(Corrade REQUIRED Main)
@@ -35,18 +35,14 @@ find_package(Magnum REQUIRED
 find_package(MagnumIntegration REQUIRED ImGui)
 
 # Getting files from include
-file(GLOB_RECURSE INCLUDE_H_FILES ${PROJECT_SOURCE_DIR}/include/*.h)
-file(GLOB_RECURSE INCLUDE_CPP_FILES ${PROJECT_SOURCE_DIR}/include/*.cpp)
-file(GLOB_RECURSE SRC_H_FILES ${PROJECT_SOURCE_DIR}/src/*.h)
-file(GLOB_RECURSE SRC_CPP_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE H_FILES ${PROJECT_SOURCE_DIR}/src/*.h)
+file(GLOB_RECURSE CPP_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
 # CREATING EXECUTABLE
 add_executable(${PROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/ext/ImGuizmo/ImGuizmo.cpp
-    ${INCLUDE_H_FILES}
-    ${SRC_H_FILES}
-    ${INCLUDE_CPP_FILES}
-    ${SRC_CPP_FILES}
+    ${H_FILES}
+    ${CPP_FILES}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
