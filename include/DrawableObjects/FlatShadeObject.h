@@ -2,6 +2,7 @@
 
 #include <Magnum/SceneGraph/Drawable.h>
 #include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/TranslationRotationScalingTransformation3D.h>
 #include <Magnum/Math/Color.h>
 #include <Magnum/SceneGraph/Camera.h>
 #include <Magnum/Shaders/Flat.h>
@@ -9,7 +10,7 @@
 
 using namespace Corrade;
 using namespace Magnum;
-using Object3D = SceneGraph::Object<SceneGraph::MatrixTransformation3D>;
+using Object3D = SceneGraph::Object<SceneGraph::TranslationRotationScalingTransformation3D>;
 
 /****************************************************************************************************/
 class FlatShadeObject : public SceneGraph::Drawable3D {

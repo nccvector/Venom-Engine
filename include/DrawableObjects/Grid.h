@@ -6,12 +6,13 @@
 #include <Magnum/GL/Mesh.h>
 #include <Magnum/Shaders/Flat.h>
 #include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/TranslationRotationScalingTransformation3D.h>
 
 /****************************************************************************************************/
 using namespace Corrade;
 using namespace Magnum;
-using Object3D = SceneGraph::Object<SceneGraph::MatrixTransformation3D>;
-using Scene3D  = SceneGraph::Scene<SceneGraph::MatrixTransformation3D>;
+using Object3D = SceneGraph::Object<SceneGraph::TranslationRotationScalingTransformation3D>;
+using Scene3D  = SceneGraph::Scene<SceneGraph::TranslationRotationScalingTransformation3D>;
 
 /****************************************************************************************************/
 class Grid {
@@ -20,7 +21,7 @@ public:
 
     Grid& setColor(const Color3& color) { m_DrawableObj->color() = color; return *this; }
     Grid& setEnable(bool bStatus) { m_DrawableObj->setEnable(bStatus); return *this; }
-    Grid& transform(const Matrix4& transMatrix) { m_Obj3D->transform(transMatrix); return *this; }
+    Grid& transform(const Matrix4& transMatrix) { m_Obj3D->setTransformation(transMatrix); return *this; }
 
     Color3& color() { return m_DrawableObj->color(); }
     bool& enabled() { return m_DrawableObj->enabled(); }

@@ -9,6 +9,7 @@
 #include <Magnum/Math/Vector3.h>
 #include <Magnum/Platform/GlfwApplication.h>
 #include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/TranslationRotationScalingTransformation3D.h>
 #include <Magnum/SceneGraph/Scene.h>
 #include <Magnum/SceneGraph/Drawable.h>
 
@@ -17,8 +18,8 @@ using namespace Corrade;
 using namespace Magnum;
 using namespace Magnum::Math::Literals;
 
-using Object3D = SceneGraph::Object<SceneGraph::MatrixTransformation3D>;
-using Scene3D  = SceneGraph::Scene<SceneGraph::MatrixTransformation3D>;
+using Object3D = SceneGraph::Object<SceneGraph::TranslationRotationScalingTransformation3D>;
+using Scene3D  = SceneGraph::Scene<SceneGraph::TranslationRotationScalingTransformation3D>;
 
 /****************************************************************************************************/
 class GLApplication : public Platform::Application {
