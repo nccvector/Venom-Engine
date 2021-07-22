@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Application/ImGuiApplication.h"
+#include "Application/GLApplication.h"
 #include "DrawableObjects/PickableObject.h"
 
+#include <Magnum/ImGuiIntegration/Context.hpp>
 #include <Magnum/Magnum.h>
 #include <Magnum/PixelFormat.h>
 #include <Magnum/GL/Framebuffer.h>
@@ -15,21 +16,37 @@
 #include <unordered_map>
 
 /****************************************************************************************************/
-class MyApplication final : public ImGuiApplication  {
+class MyApplication final : public GLApplication  {
 public:
     explicit MyApplication(const Arguments& arguments, 
                             size_t indexDataSize = 16, 
                             const Vector2i& defaultWindowSize = Vector2i{ 1920, 1080 });
 
 protected:
+    void SetDarkThemeColors();
     void viewportEvent(ViewportEvent& event) override;
+    void keyPressEvent(KeyEvent& event) override;
+    void keyReleaseEvent(KeyEvent& event) override;
     void mousePressEvent(MouseEvent& event) override;
+    void mouseReleaseEvent(MouseEvent& event) override;
+    void mouseMoveEvent(MouseMoveEvent& event) override;
+    void mouseScrollEvent(MouseScrollEvent& event) override;
+    void textInputEvent(TextInputEvent& event) override;
+
+    void beginFrame();
+    void endFrame();
 
     bool editPointTransformation(PickableObject* object);
     void setPointTransformation(size_t selectedObjID, const Matrix4& objMat,
                                 Containers::Array<Vector3>& points);
                                 
     void drawEvent() override;
+
+
+
+    /* Window control */
+    bool m_bShowMenu { true };
+    ImGuiIntegration::Context m_ImGuiContext{ NoCreate };
 
     /* Object index format */
     GL::RenderbufferFormat               m_IndexFormat { GL::RenderbufferFormat::R16UI };
