@@ -7,7 +7,12 @@
 #include <Magnum/Trade/MeshData.h>
 #include <Magnum/Primitives/Icosphere.h>
 
+#include <imgui_internal.h>
+
 using namespace Magnum::Math::Literals;
+
+void BeginDockspace();
+void EndDockspace();
 
 /****************************************************************************************************/
 MyApplication::MyApplication(const Arguments& arguments) :
@@ -75,13 +80,77 @@ void MyApplication::drawEvent() {
     m_FrameBuffer.mapForRead(GL::Framebuffer::ColorAttachment{ 0 });
     GL::AbstractFramebuffer::blit(m_FrameBuffer, GL::defaultFramebuffer,
                                   { {}, m_FrameBuffer.viewport().size() }, GL::FramebufferBlit::Color);
+    
+    BeginDockspace();
 
+    // Menu Bar
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            ImGui::Separator();
 
+            if (ImGui::MenuItem("Quit", NULL, false))
+            {
+                // Exit the application
+                exit();
+            }
+            ImGui::EndMenu();
+        }
 
+        if (ImGui::BeginMenu("Edit"))
+        {
+            ImGui::EndMenu();
+        }
 
-    // ImGui::Begin("Hello Tab");
-    // ImGui::Text("Hello World");
-    // ImGui::End();
+        if (ImGui::BeginMenu("View"))
+        {
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
+    }
+
+    // Heirarchy
+    {
+        ImGui::Begin("Heirarchy");
+
+        ImGui::End();
+    }
+
+    // INSPECTOR
+    {
+        ImGui::Begin("Inspector");
+
+        PickableObject* selectedPoint = PickableObject::selectedObj();
+        if(selectedPoint && ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+            if(selectedPoint->isSelectable()
+            && selectedPoint->isMovable()) {
+                std::string str = "Point: #" + std::to_string(selectedPoint->idx());
+                ImGui::Text("%s", str.c_str());
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                Matrix4 objMat = selectedPoint->transformation();
+                if(editPointTransformation(objMat)) {
+                    selectedPoint->setTransformation(objMat);                       /* Update drawable transformation */
+                    setPointTransformation(selectedPoint->idx(), objMat, m_Points); /* Update real data point */
+                }
+            }
+        }
+
+        ImGui::End();
+    }
+
+    EndDockspace();
+
+    ImGuiApplication::endFrame();
+    swapBuffers();
+    redraw();
+}
+
+void BeginDockspace()
+{
     static bool dockspaceOpen = true;
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 
@@ -105,7 +174,7 @@ void MyApplication::drawEvent() {
     // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
     // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
+    ImGui::Begin("Venom Engine Dockspace", &dockspaceOpen, window_flags);
     ImGui::PopStyleVar();
     ImGui::PopStyleVar(2);
 
@@ -113,58 +182,33 @@ void MyApplication::drawEvent() {
     ImGuiIO& io = ImGui::GetIO();
     if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
     {
-        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+        ImGuiID dockspace_id = ImGui::GetID("Venom Engine Dockspace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-    }
 
-    if (ImGui::BeginMenuBar())
-    {
-        if (ImGui::BeginMenu("Options"))
+        static auto first_time = true;
+        if (first_time)
         {
-            // Disabling fullscreen would allow the window to be moved to the front of other windows,
-            // which we can't undo at the moment without finer window depth/z control.
-            if (ImGui::MenuItem("Flag: NoSplit",                "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0))                 { dockspace_flags ^= ImGuiDockNodeFlags_NoSplit; }
-            if (ImGui::MenuItem("Flag: NoResize",               "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0))                { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
-            if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0))  { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode; }
-            if (ImGui::MenuItem("Flag: AutoHideTabBar",         "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0))          { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
-            
-            ImGui::Separator();
+            first_time = false;
 
-            if (ImGui::MenuItem("Close", NULL, false))
-                dockspaceOpen = false;
-            ImGui::EndMenu();
-        }
+            ImGui::DockBuilderRemoveNode(dockspace_id); // clear any previous layout
+            ImGui::DockBuilderAddNode(dockspace_id, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
+            ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
 
-        ImGui::EndMenuBar();
-    }
+            // split the dockspace into 2 nodes -- DockBuilderSplitNode takes in the following args in the following order
+            //   window ID to split, direction, fraction (between 0 and 1), the final two setting let's us choose which id we want (which ever one we DON'T set as NULL, will be returned by the function)
+            //                                                              out_id_at_dir is the id of the node in the direction we specified earlier, out_id_at_opposite_dir is in the opposite direction
+            auto dock_id_left = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Left, 0.2f, nullptr, &dockspace_id);
+            auto dock_id_right = ImGui::DockBuilderSplitNode(dockspace_id, ImGuiDir_Right, 0.25f, nullptr, &dockspace_id);
 
-    ImGui::Begin("Hello Window");
-    ImGui::Text("HELLOW WORLD");
-    ImGui::End();
-
-    /* Manipulate nodes' transformation */
-    PickableObject* selectedPoint = PickableObject::selectedObj();
-    if(selectedPoint) {
-        if(selectedPoint->isSelectable()
-           && selectedPoint->isMovable()) {
-            ImGui::Begin("Transform");
-            std::string str = "Point: #" + std::to_string(selectedPoint->idx());
-            ImGui::Text("%s", str.c_str());
-            ImGui::Separator();
-            ImGui::Spacing();
-
-            Matrix4 objMat = selectedPoint->transformation();
-            if(editPointTransformation(objMat)) {
-                selectedPoint->setTransformation(objMat);                       /* Update drawable transformation */
-                setPointTransformation(selectedPoint->idx(), objMat, m_Points); /* Update real data point */
-            }
-            ImGui::End();
+            // we now dock our windows into the docking node we made above
+            ImGui::DockBuilderDockWindow("Heirarchy", dock_id_left);
+            ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
+            ImGui::DockBuilderFinish(dockspace_id);
         }
     }
+}
 
+void EndDockspace()
+{
     ImGui::End();
-
-    ImGuiApplication::endFrame();
-    swapBuffers();
-    redraw();
 }
