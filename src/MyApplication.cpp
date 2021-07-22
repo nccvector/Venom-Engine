@@ -132,8 +132,7 @@ void MyApplication::drawEvent() {
                 ImGui::Spacing();
 
                 Matrix4 objMat = selectedPoint->transformation();
-                if(editPointTransformation(objMat)) {
-                    selectedPoint->setTransformation(objMat);                       /* Update drawable transformation */
+                if(editPointTransformation(selectedPoint)) {
                     setPointTransformation(selectedPoint->idx(), objMat, m_Points); /* Update real data point */
                 }
             }

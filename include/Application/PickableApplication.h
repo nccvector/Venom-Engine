@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Application/ImGuiApplication.h"
+#include "DrawableObjects/PickableObject.h"
 
 #include <Magnum/Magnum.h>
 #include <Magnum/PixelFormat.h>
@@ -21,7 +22,7 @@ protected:
     void viewportEvent(ViewportEvent& event) override;
     void mousePressEvent(MouseEvent& event) override;
 
-    bool editPointTransformation(Matrix4& objMat);
+    bool editPointTransformation(PickableObject* object);
     void setPointTransformation(size_t selectedObjID, const Matrix4& objMat,
                                 Containers::Array<Vector3>& points);
 

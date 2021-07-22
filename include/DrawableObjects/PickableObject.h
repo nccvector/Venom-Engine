@@ -3,13 +3,14 @@
 #include <Corrade/Containers/Array.h>
 #include <Magnum/SceneGraph/Drawable.h>
 #include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/TranslationRotationScalingTransformation3D.h>
 #include <Magnum/Math/Color.h>
 #include <Magnum/Shaders/Phong.h>
 
 using namespace Corrade;
 using namespace Magnum;
-using Object3D = SceneGraph::Object<SceneGraph::MatrixTransformation3D>;
-using Scene3D  = SceneGraph::Scene<SceneGraph::MatrixTransformation3D>;
+using Object3D = SceneGraph::Object<SceneGraph::TranslationRotationScalingTransformation3D>;
+using Scene3D  = SceneGraph::Scene<SceneGraph::TranslationRotationScalingTransformation3D>;
 
 /****************************************************************************************************/
 class PickableObject : public Object3D, SceneGraph::Drawable3D {
