@@ -1,4 +1,5 @@
 #include "MyApplication.h"
+#include <Magnum/GL/Renderer.h>
 
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/GL/PixelFormat.h>
@@ -22,10 +23,35 @@ void EndDockspace();
 MyApplication::MyApplication(const Arguments& arguments,
                                 size_t indexDataSize,
                                 const Vector2i& defaultWindowSize) :
-    ImGuiApplication{"My Application", arguments, defaultWindowSize} {
+    GLApplication{"My Application", arguments, defaultWindowSize} {
+
+    /* Setup ImGui and ImGuizmo */
+    m_ImGuiContext = ImGuiIntegration::Context(Vector2{ windowSize() } / dpiScaling(),
+                                               windowSize(), framebufferSize());
+
+    ImGuiIO& io = ImGui::GetIO();
+    // ImGui::StyleColorsDark(); // Being set by a function below
+
+    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
+
+    // SETTING DARK THEME
+    SetDarkThemeColors();
+
+    /* Setup proper blending to be used by ImGui. There's a great chance
+       you'll need this exact behavior for the rest of your scene. If not, set
+       this only for the drawFrame() call. */
+    GL::Renderer::setBlendFunction(GL::Renderer::BlendFunction::SourceAlpha,
+                                   GL::Renderer::BlendFunction::OneMinusSourceAlpha);
+
+    // ===================================================================================
 
     /* Relayout ImGuizmo */
-    ImGuiIO& io = ImGui::GetIO();
     ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
     /* Setup buffers */
@@ -98,8 +124,47 @@ MyApplication::MyApplication(const Arguments& arguments,
     }
 }
 
+void MyApplication::SetDarkThemeColors()
+{
+    auto& colors = ImGui::GetStyle().Colors;
+    colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
+
+    // Headers
+    colors[ImGuiCol_Header] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+    colors[ImGuiCol_HeaderHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+    colors[ImGuiCol_HeaderActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+    
+    // Buttons
+    colors[ImGuiCol_Button] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+    colors[ImGuiCol_ButtonHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+    colors[ImGuiCol_ButtonActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+    // Frame BG
+    colors[ImGuiCol_FrameBg] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+    colors[ImGuiCol_FrameBgHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
+    colors[ImGuiCol_FrameBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+    // Tabs
+    colors[ImGuiCol_Tab] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+    colors[ImGuiCol_TabHovered] = ImVec4{ 0.38f, 0.3805f, 0.381f, 1.0f };
+    colors[ImGuiCol_TabActive] = ImVec4{ 0.28f, 0.2805f, 0.281f, 1.0f };
+    colors[ImGuiCol_TabUnfocused] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+    colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
+
+    // Title
+    colors[ImGuiCol_TitleBg] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+    colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+    colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+}
+
 void MyApplication::viewportEvent(ViewportEvent& event) {
-    ImGuiApplication::viewportEvent(event);
+    GLApplication::viewportEvent(event);
+
+    /* Relayout ImGui */
+    m_ImGuiContext.relayout(Vector2{ event.windowSize() } / event.dpiScaling(),
+                            event.windowSize(), event.framebufferSize());
+
+    // ==============================================================================
 
     /* Relayout ImGuizmo */
     ImGuiIO& io = ImGui::GetIO();
@@ -113,8 +178,35 @@ void MyApplication::viewportEvent(ViewportEvent& event) {
     m_FrameBuffer.setViewport(viewport);
 }
 
+void MyApplication::keyPressEvent(KeyEvent& event) {
+    if(m_ImGuiContext.handleKeyPressEvent(event)) {
+        event.setAccepted(true);
+    } else {
+        GLApplication::keyPressEvent(event);
+        if(!event.isAccepted()) {
+            if(event.key() == KeyEvent::Key::H) {
+                m_bShowMenu ^= true;
+                event.setAccepted(true);
+            }
+        }
+    }
+}
+
+void MyApplication::keyReleaseEvent(KeyEvent& event) {
+    if(m_ImGuiContext.handleKeyReleaseEvent(event)) {
+        event.setAccepted(true);
+    }
+}
+
 void MyApplication::mousePressEvent(MouseEvent& event) {
-    ImGuiApplication::mousePressEvent(event);
+    if(m_ImGuiContext.handleMousePressEvent(event)) {
+        event.setAccepted(true);
+    } else {
+        GLApplication::mousePressEvent(event);
+    }
+
+    // ==================================================================================
+
     if(event.isAccepted()) {
         return;
     }
@@ -143,6 +235,64 @@ void MyApplication::mousePressEvent(MouseEvent& event) {
 
     PickableObject::updateSelectedObject(idx);
     event.setAccepted();
+}
+
+void MyApplication::mouseReleaseEvent(MouseEvent& event) {
+    if(m_ImGuiContext.handleMouseReleaseEvent(event)) {
+        event.setAccepted(true);
+    }
+}
+
+void MyApplication::mouseMoveEvent(MouseMoveEvent& event) {
+    if(m_ImGuiContext.handleMouseMoveEvent(event)) {
+        event.setAccepted(true);
+    } else {
+        GLApplication::mouseMoveEvent(event);
+    }
+}
+
+void MyApplication::mouseScrollEvent(MouseScrollEvent& event) {
+    if(m_ImGuiContext.handleMouseScrollEvent(event)) {
+        /* Prevent scrolling the page */
+        event.setAccepted(true);
+    } else {
+        GLApplication::mouseScrollEvent(event);
+    }
+}
+
+void MyApplication::textInputEvent(TextInputEvent& event) {
+    if(m_ImGuiContext.handleTextInputEvent(event)) {
+        event.setAccepted(true);
+    }
+}
+
+void MyApplication::beginFrame() {
+    m_ImGuiContext.newFrame();
+    /* Enable text input, if needed */
+    if(ImGui::GetIO().WantTextInput && !isTextInputActive()) {
+        startTextInput();
+    } else if(!ImGui::GetIO().WantTextInput && isTextInputActive()) {
+        stopTextInput();
+    }
+}
+
+void MyApplication::endFrame() {
+    /* Update application cursor */
+    m_ImGuiContext.updateApplicationCursor(*this);
+
+    /* Set appropriate states. If you only draw imgui UI, it is sufficient to do this once in the constructor. */
+    GL::Renderer::enable(GL::Renderer::Feature::Blending);
+    GL::Renderer::disable(GL::Renderer::Feature::FaceCulling);
+    GL::Renderer::disable(GL::Renderer::Feature::DepthTest);
+    GL::Renderer::enable(GL::Renderer::Feature::ScissorTest);
+
+    m_ImGuiContext.drawFrame();
+
+    /* Reset state. Only needed if you want to draw something else with different state next frame. */
+    GL::Renderer::disable(GL::Renderer::Feature::ScissorTest);
+    GL::Renderer::enable(GL::Renderer::Feature::DepthTest);
+    GL::Renderer::enable(GL::Renderer::Feature::FaceCulling);
+    GL::Renderer::disable(GL::Renderer::Feature::Blending);
 }
 
 bool MyApplication::editPointTransformation(PickableObject* object) {
@@ -206,7 +356,8 @@ void MyApplication::setPointTransformation(size_t selectedObjID, const Matrix4& 
 /****************************************************************************************************/
 void MyApplication::drawEvent() {
     GL::defaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
-    ImGuiApplication::beginFrame();
+    
+    beginFrame();
 
     /* Update camera */
     m_Camera->update();
@@ -291,7 +442,7 @@ void MyApplication::drawEvent() {
 
     EndDockspace();
 
-    ImGuiApplication::endFrame();
+    endFrame();
     swapBuffers();
     redraw();
 }
