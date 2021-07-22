@@ -23,7 +23,7 @@ void EndDockspace();
 MyApplication::MyApplication(const Arguments& arguments,
                                 size_t indexDataSize,
                                 const Vector2i& defaultWindowSize) :
-    GLApplication{"My Application", arguments, defaultWindowSize} {
+    GLApplication{"Venom Engine", arguments, defaultWindowSize} {
 
     /* Setup ImGui and ImGuizmo */
     m_ImGuiContext = ImGuiIntegration::Context(Vector2{ windowSize() } / dpiScaling(),
