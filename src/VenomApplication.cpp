@@ -1,4 +1,4 @@
-#include "MyApplication.h"
+#include "VenomApplication.h"
 #include <Magnum/GL/Renderer.h>
 
 #include <Magnum/GL/DefaultFramebuffer.h>
@@ -18,9 +18,14 @@ using namespace Magnum::Math::Literals;
 
 void BeginDockspace();
 void EndDockspace();
+// Helper to display a little (?) mark which shows a tooltip when hovered.
+// In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)
+static void HelpMarker(const char* desc);
+ImGuizmo::OPERATION m_CurrentGizmoOperation{ImGuizmo::TRANSLATE};
+ImGuizmo::MODE m_CurrentGuizmoMode{ImGuizmo::WORLD};
 
 /****************************************************************************************************/
-MyApplication::MyApplication(const Arguments& arguments,
+VenomApplication::VenomApplication(const Arguments& arguments,
                                 size_t indexDataSize,
                                 const Vector2i& defaultWindowSize) :
     GLApplication{"Venom Engine", arguments, defaultWindowSize} {
@@ -124,7 +129,7 @@ MyApplication::MyApplication(const Arguments& arguments,
     }
 }
 
-void MyApplication::SetDarkThemeColors()
+void VenomApplication::SetDarkThemeColors()
 {
     auto& colors = ImGui::GetStyle().Colors;
     colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
@@ -157,7 +162,7 @@ void MyApplication::SetDarkThemeColors()
     colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 }
 
-void MyApplication::viewportEvent(ViewportEvent& event) {
+void VenomApplication::viewportEvent(ViewportEvent& event) {
     GLApplication::viewportEvent(event);
 
     /* Relayout ImGui */
@@ -178,7 +183,7 @@ void MyApplication::viewportEvent(ViewportEvent& event) {
     m_FrameBuffer.setViewport(viewport);
 }
 
-void MyApplication::keyPressEvent(KeyEvent& event) {
+void VenomApplication::keyPressEvent(KeyEvent& event) {
     if(m_ImGuiContext.handleKeyPressEvent(event)) {
         event.setAccepted(true);
     } else {
@@ -192,13 +197,13 @@ void MyApplication::keyPressEvent(KeyEvent& event) {
     }
 }
 
-void MyApplication::keyReleaseEvent(KeyEvent& event) {
+void VenomApplication::keyReleaseEvent(KeyEvent& event) {
     if(m_ImGuiContext.handleKeyReleaseEvent(event)) {
         event.setAccepted(true);
     }
 }
 
-void MyApplication::mousePressEvent(MouseEvent& event) {
+void VenomApplication::mousePressEvent(MouseEvent& event) {
     if(m_ImGuiContext.handleMousePressEvent(event)) {
         event.setAccepted(true);
     } else {
@@ -237,13 +242,13 @@ void MyApplication::mousePressEvent(MouseEvent& event) {
     event.setAccepted();
 }
 
-void MyApplication::mouseReleaseEvent(MouseEvent& event) {
+void VenomApplication::mouseReleaseEvent(MouseEvent& event) {
     if(m_ImGuiContext.handleMouseReleaseEvent(event)) {
         event.setAccepted(true);
     }
 }
 
-void MyApplication::mouseMoveEvent(MouseMoveEvent& event) {
+void VenomApplication::mouseMoveEvent(MouseMoveEvent& event) {
     if(m_ImGuiContext.handleMouseMoveEvent(event)) {
         event.setAccepted(true);
     } else {
@@ -251,7 +256,7 @@ void MyApplication::mouseMoveEvent(MouseMoveEvent& event) {
     }
 }
 
-void MyApplication::mouseScrollEvent(MouseScrollEvent& event) {
+void VenomApplication::mouseScrollEvent(MouseScrollEvent& event) {
     if(m_ImGuiContext.handleMouseScrollEvent(event)) {
         /* Prevent scrolling the page */
         event.setAccepted(true);
@@ -260,13 +265,13 @@ void MyApplication::mouseScrollEvent(MouseScrollEvent& event) {
     }
 }
 
-void MyApplication::textInputEvent(TextInputEvent& event) {
+void VenomApplication::textInputEvent(TextInputEvent& event) {
     if(m_ImGuiContext.handleTextInputEvent(event)) {
         event.setAccepted(true);
     }
 }
 
-void MyApplication::beginFrame() {
+void VenomApplication::beginFrame() {
     m_ImGuiContext.newFrame();
     /* Enable text input, if needed */
     if(ImGui::GetIO().WantTextInput && !isTextInputActive()) {
@@ -276,7 +281,7 @@ void MyApplication::beginFrame() {
     }
 }
 
-void MyApplication::endFrame() {
+void VenomApplication::endFrame() {
     /* Update application cursor */
     m_ImGuiContext.updateApplicationCursor(*this);
 
@@ -295,7 +300,7 @@ void MyApplication::endFrame() {
     GL::Renderer::disable(GL::Renderer::Feature::Blending);
 }
 
-bool MyApplication::editPointTransformation(PickableObject* object) {
+bool VenomApplication::editPointTransformation(PickableObject* object) {
     const auto camMat = m_Camera->viewMatrix();
     const auto prjMat = m_Camera->camera().projectionMatrix();
     ImGuizmo::BeginFrame();
@@ -322,18 +327,8 @@ bool MyApplication::editPointTransformation(PickableObject* object) {
 
     Matrix4 tempTrans = object->transformation();
 
-    // ImGuizmo::Manipulate(camMat.data(), prjMat.data(),
-    //                      ImGuizmo::SCALE, ImGuizmo::LOCAL,
-    //                      tempTrans.data(),
-    //                      nullptr, nullptr, nullptr, nullptr);
-
-    // ImGuizmo::Manipulate(camMat.data(), prjMat.data(),
-    //                      ImGuizmo::ROTATE, ImGuizmo::LOCAL,
-    //                      tempTrans.data(),
-    //                      nullptr, nullptr, nullptr, nullptr);
-
     ImGuizmo::Manipulate(camMat.data(), prjMat.data(),
-                         ImGuizmo::TRANSLATE, ImGuizmo::LOCAL,
+                         m_CurrentGizmoOperation, m_CurrentGuizmoMode,
                          tempTrans.data(),
                          nullptr, nullptr, nullptr, nullptr);
 
@@ -344,7 +339,7 @@ bool MyApplication::editPointTransformation(PickableObject* object) {
     return bEdited || ImGuizmo::IsUsing();
 }
 
-void MyApplication::setPointTransformation(size_t selectedObjID, const Matrix4& objMat,
+void VenomApplication::setPointTransformation(size_t selectedObjID, const Matrix4& objMat,
                                                  Containers::Array<Vector3>& points) {
     const auto it = m_mDrawableIdxToPointIdx.find(selectedObjID);
     CORRADE_INTERNAL_ASSERT(it != m_mDrawableIdxToPointIdx.end());
@@ -354,7 +349,7 @@ void MyApplication::setPointTransformation(size_t selectedObjID, const Matrix4& 
 }
 
 /****************************************************************************************************/
-void MyApplication::drawEvent() {
+void VenomApplication::drawEvent() {
     GL::defaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
     
     beginFrame();
@@ -413,6 +408,18 @@ void MyApplication::drawEvent() {
     // Heirarchy
     {
         ImGui::Begin("Heirarchy");
+
+        if (ImGui::CollapsingHeader("Temp toolbar", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            static int e = 0;
+            ImGui::RadioButton("Translate", &e, 0); ImGui::SameLine();
+            ImGui::RadioButton("Rotate", &e, 1); ImGui::SameLine();
+            ImGui::RadioButton("Scale", &e, 2);
+
+            if (e == 0) {m_CurrentGizmoOperation = ImGuizmo::TRANSLATE;}
+            if (e == 1) {m_CurrentGizmoOperation = ImGuizmo::ROTATE;}
+            if (e == 2) {m_CurrentGizmoOperation = ImGuizmo::SCALE;}
+        }
 
         ImGui::End();
     }
@@ -509,4 +516,19 @@ void BeginDockspace()
 void EndDockspace()
 {
     ImGui::End();
+}
+
+// Helper to display a little (?) mark which shows a tooltip when hovered.
+// In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)
+static void HelpMarker(const char* desc)
+{
+    ImGui::TextDisabled("(?)");
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
 }
