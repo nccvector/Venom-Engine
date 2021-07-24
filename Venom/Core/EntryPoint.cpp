@@ -25,13 +25,21 @@ namespace Venom
 
     void OnEvent(Event& e)
     {
-      Venom::LogInfo("Application Event Triggered");
+      EventDispatcher dispatcher(e);
+      dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
+      VENOM_INFO("{0}", e);
+    }
+
+    bool OnWindowClose(WindowCloseEvent& e)
+    {
+      VENOM_INFO("Application::Window is closed");
+      return true;
     }
 
     void Run()
     {
       // Simulation loop
-      Venom::LogInfo("Starting the loop");
+      VENOM_INFO("Starting the loop");
       while (!glfwWindowShouldClose(m_Window->Get()))
       {
         // Render here...

@@ -67,29 +67,29 @@ namespace Venom
       m_Data.Width = props.Width;
       m_Data.Height = props.Height;
 
-      Venom::LogInfo("Initializing glfw...");
+      VENOM_INFO("Initializing glfw...");
 
       if (!glfwInit())
       {
         // Handle initialization failure
-        Venom::LogError("glfw initialization failed!");
+        VENOM_ERROR("glfw initialization failed!");
       }
 
       // Configure glfw
       glfwDefaultWindowHints();
       glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
 
-      Venom::LogInfo("Successfully initialized glfw");
+      VENOM_INFO("Successfully initialized glfw");
 
       // Creating a m_Window instance
       m_Window = glfwCreateWindow(props.Width, props.Height, props.Title.c_str(), NULL, NULL);
       if (!m_Window)
       {
         // Window or OpenGL context creation failed
-        Venom::LogError("Failed to create a m_Window");
+        VENOM_INFO("Failed to create a m_Window");
       }
 
-      Venom::LogInfo("Window Creation Successful");
+      VENOM_INFO("Window Creation Successful");
 
       // Setting the current context
       glfwMakeContextCurrent(m_Window);
@@ -104,29 +104,101 @@ namespace Venom
       {
         // Getting window user pointer
         WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+        data->Width = width;
+        data->Height = height;
 
         WindowResizeEvent event(width, height);
         data->EventCallback(event);
-        data->Width = width;
-        data->Height = height;
       });
 
-      glfwSetKeyCallback(m_Window, [](GLFWwindow *m_Window, int key, int scancode, int action, int mods)
+      glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
       {
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(m_Window, GLFW_TRUE);
+        // Getting window user pointer
+        WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+        
+        WindowCloseEvent event;
+        data->EventCallback(event);
+      });
+
+      glfwSetKeyCallback(m_Window, [](GLFWwindow *window, int key, int scancode, int action, int mods)
+      {
+        // Getting window user pointer
+        WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+
+        switch(action)
+        {
+          case GLFW_PRESS:
+          {
+            KeyPressedEvent event(key, 0);
+            data->EventCallback(event);
+            break;
+          }
+          case GLFW_RELEASE:
+          {
+            KeyReleasedEvent event(key);
+            data->EventCallback(event);
+            break;
+          }
+          case GLFW_REPEAT:
+          {
+            KeyPressedEvent event(key, 1);
+            data->EventCallback(event);
+            break;
+          }
+        }
+      });
+
+      glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
+      {
+        // Getting window user pointer
+        WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+
+        switch(action)
+        {
+          case GLFW_PRESS:
+          {
+            MouseButtonPressedEvent event(button);
+            data->EventCallback(event);
+            break;
+          }
+          case GLFW_RELEASE:
+          {
+            MouseButtonReleasedEvent event(button);
+            data->EventCallback(event);
+            break;
+          }
+          // REPEAT TO BE IMPLEMENTED YET
+        }
+      });
+
+      glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
+      {
+        // Getting window user pointer
+        WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+
+        MouseScrolledEvent event((float)xOffset, (float)yOffset);
+        data->EventCallback(event);
+      });
+
+      glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
+      {
+        // Getting window user pointer
+        WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+
+        MouseMovedEvent event((float)xPos, (float)yPos);
+        data->EventCallback(event);
       });
 
       glfwSetErrorCallback([](int code, const char *description)
       {
-        Venom::LogError(description);
+        VENOM_ERROR(description);
         throw std::invalid_argument(description);
       });
     }
 
     void Shutdown()
     {
-      Venom::LogInfo("Destroying the m_Window");
+      VENOM_INFO("Destroying the m_Window");
       // Terminating the glfw
       glfwDestroyWindow(m_Window);
       glfwTerminate();
