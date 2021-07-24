@@ -29,6 +29,7 @@ namespace Venom
   std::shared_ptr<spdlog::logger> Log::s_Logger;
 }
 
+// LOGGING MACROS
 #define VENOM_TRACE(...)    ::Venom::Log::GetLogger()->trace(__VA_ARGS__)
 #define VENOM_INFO(...)     ::Venom::Log::GetLogger()->info(__VA_ARGS__)
 #define VENOM_WARN(...)     ::Venom::Log::GetLogger()->warn(__VA_ARGS__)

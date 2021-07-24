@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Making Venom-Engine as a library
 add_executable(${PROJECT_NAME}
-    Venom/Core/EntryPoint.cpp
+    Venom/EntryPoint.cpp
 )
 
 # Adding Venom as an include directory
