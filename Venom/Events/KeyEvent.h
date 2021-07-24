@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Event/Event.h"
+#include "Events/Event.h"
 #include "Core/KeyCodes.h"
 
-namespace Hazel
+namespace Venom
 {
-
   class KeyEvent : public Event
   {
   public:

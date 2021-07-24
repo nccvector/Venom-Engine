@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Event/Event.h"
+#include "Events/Event.h"
 
 namespace Venom
 {
@@ -16,7 +16,7 @@ namespace Venom
 
     std::string ToString() const override
     {
-      std::stringstream ss;
+      std::stringstream ss("");
       ss << "WindowResizeEvent: " << m_Width << ", " << m_Height;
       return ss.str();
     }

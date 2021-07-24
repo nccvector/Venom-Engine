@@ -1,50 +1,72 @@
 #pragma once
 
+#include "Events/ApplicationEvent.h"
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
+
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
 namespace Venom
 {
-  // Namespace functions
-  void error_callback(int code, const char *description)
+  struct WindowProps
   {
-    Venom::LogError(description);
-    throw std::invalid_argument(description);
-  }
+    std::string Title;
+    unsigned int Width;
+    unsigned int Height;
 
-  static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
-  {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-      glfwSetWindowShouldClose(window, GLFW_TRUE);
-  }
+    WindowProps(const std::string& title = "Venom Engine",
+                unsigned int width = 800,
+                unsigned int height = 600)
+                : Title(title), Width(width), Height(height)
+    {  
+    }
+  };
 
   class Window
   {
   public:
-    // Constructor
-    Window()
-    {
-      Width = 640;
-      Height = 480;
-      Title = "Venom Engine";
+    using EventCallbackFn = std::function<void(Event&)>;
 
-      // Must start with NULL
-      window = NULL;
+    ~Window() 
+    {
+      Shutdown();
     }
 
-    ~Window()
+    void OnUpdate()
     {
-      Destroy();
+      glfwPollEvents();
+      glfwSwapBuffers(m_Window);
     }
 
-    GLFWwindow *Get()
-    {
-      return window;
+    inline unsigned int GetWidth() { return m_Data.Width; }
+    inline unsigned int GetHeight() { return m_Data.Height; }
+
+    inline GLFWwindow *Get() { return m_Window; }
+
+    // Window attributes
+    inline void SetEventCallback(const EventCallbackFn& callback) { m_Data.EventCallback = callback; }
+
+    void SetVSync(bool enabled) 
+    { 
+      if (enabled)
+        glfwSwapInterval(1);
+      else
+        glfwSwapInterval(0);
+
+      m_Data.VSync = enabled;  
     }
 
-    void Init()
+    inline bool IsVSync() const { return m_Data.VSync; }
+
+    // Init Create Destroy Shutdown
+    void Init(const WindowProps& props = WindowProps())
     {
+      m_Data.Title = props.Title;
+      m_Data.Width = props.Width;
+      m_Data.Height = props.Height;
+
       Venom::LogInfo("Initializing glfw...");
 
       if (!glfwInit())
@@ -59,44 +81,71 @@ namespace Venom
 
       Venom::LogInfo("Successfully initialized glfw");
 
-      // Creating a window instance
-      window = glfwCreateWindow(Width, Height, Title, NULL, NULL);
-      if (!window)
+      // Creating a m_Window instance
+      m_Window = glfwCreateWindow(props.Width, props.Height, props.Title.c_str(), NULL, NULL);
+      if (!m_Window)
       {
         // Window or OpenGL context creation failed
-        Venom::LogError("Failed to create a window");
+        Venom::LogError("Failed to create a m_Window");
       }
 
       Venom::LogInfo("Window Creation Successful");
 
       // Setting the current context
-      glfwMakeContextCurrent(window);
+      glfwMakeContextCurrent(m_Window);
+      glfwSetWindowUserPointer(m_Window, &m_Data);
+      SetVSync(true);
 
       // Loading openGL
       gladLoadGL();
 
-      // Setting the input callbacks
-      glfwSetKeyCallback(window, key_callback);
+      // Setting Callbacks
+      glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+      {
+        // Getting window user pointer
+        WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
 
-      // Attaching error callback for logging
-      glfwSetErrorCallback(error_callback);
+        WindowResizeEvent event(width, height);
+        data->EventCallback(event);
+        data->Width = width;
+        data->Height = height;
+      });
+
+      glfwSetKeyCallback(m_Window, [](GLFWwindow *m_Window, int key, int scancode, int action, int mods)
+      {
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(m_Window, GLFW_TRUE);
+      });
+
+      glfwSetErrorCallback([](int code, const char *description)
+      {
+        Venom::LogError(description);
+        throw std::invalid_argument(description);
+      });
     }
 
-    void Destroy()
+    void Shutdown()
     {
-      Venom::LogInfo("Destroying the window");
+      Venom::LogInfo("Destroying the m_Window");
       // Terminating the glfw
-      glfwDestroyWindow(window);
+      glfwDestroyWindow(m_Window);
       glfwTerminate();
     }
 
   private:
-    unsigned int Width;
-    unsigned int Height;
-    const char *Title;
 
     // Window pointer
-    GLFWwindow *window;
-  };
+    GLFWwindow *m_Window;
 
+    struct WindowData
+    {
+      std::string Title;
+      unsigned int Width, Height;
+      bool VSync;
+
+      EventCallbackFn EventCallback;
+    };
+
+    WindowData m_Data;
+  };
 }

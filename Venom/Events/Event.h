@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Base.h"
+
+#include <sstream>
 #include <functional>
 
 namespace Venom
