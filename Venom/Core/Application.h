@@ -1,5 +1,8 @@
+#pragma once
+
 #include "Core/Log.h"
 #include "Core/Window.h"
+#include "LayerStack.h"
 
 namespace Venom
 {
@@ -25,9 +28,28 @@ namespace Venom
 
     void OnEvent(Event& e)
     {
+      // Will run only if the event is WindowCloseEvent
       EventDispatcher dispatcher(e);
       dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
       VENOM_INFO("{0}", e);
+
+      // Traversing layerstack backwards
+      for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+      {
+        (*--it)->OnEvent(e);
+        if (e.Handled)
+          break;
+      }
+    }
+
+    void PushLayer(Layer* layer)
+    {
+      m_LayerStack.PushLayer(layer);
+    }
+
+    void PushOverlay(Layer* overlay)
+    {
+      m_LayerStack.PushOverlay(overlay);
     }
 
     bool OnWindowClose(WindowCloseEvent& e)
@@ -46,6 +68,9 @@ namespace Venom
         glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        for (Layer* layer : m_LayerStack)
+          layer->OnUpdate();
+
         m_Window->OnUpdate();
       }
     }
@@ -53,6 +78,7 @@ namespace Venom
   private:
     // Unique pointer to the Window Object
     std::unique_ptr<Window> m_Window;
+    LayerStack m_LayerStack;
 
     // TO BE DEFINED IN CLIENT
     Application* CreateApplication()
