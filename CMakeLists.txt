@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME}
     Venom/EntryPoint.cpp
     Venom/Core/Application.cpp
     Venom/Core/Log.cpp
+    Venom/Core/Window.cpp
     Venom/Core/Layer.cpp
     Venom/Core/LayerStack.cpp
     Venom/Gui/ImGuiLayer.cpp
