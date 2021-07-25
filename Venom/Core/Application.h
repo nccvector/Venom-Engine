@@ -11,17 +11,15 @@ namespace Venom
   class Application
   {
   public:
-    Application()
+
+    static Application* Get()
     {
-      // Creating a new Window
-      m_Window = std::unique_ptr<Window>(new Venom::Window());
-
-      // Binding application event to the window instance
-      m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
-
-      // Initializing window
-      m_Window->Init();
+      if(!s_Application)
+        s_Application = new Application();
+      
+      return s_Application;
     }
+
     ~Application() 
     {
     }
@@ -76,6 +74,20 @@ namespace Venom
     }
 
   private:
+    Application()
+    {
+      // Creating a new Window
+      m_Window = std::unique_ptr<Window>(new Venom::Window());
+
+      // Binding application event to the window instance
+      m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+
+      // Initializing window
+      m_Window->Init();
+    }
+    
+    static Application *s_Application;
+
     // Unique pointer to the Window Object
     std::unique_ptr<Window> m_Window;
     LayerStack m_LayerStack;
@@ -86,4 +98,7 @@ namespace Venom
 
     }
   };
+
+  // Initializing the singleton pointer (needs to be initialized outside class)
+  Application* Application::s_Application;
 }

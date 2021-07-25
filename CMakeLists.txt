@@ -10,6 +10,7 @@ add_executable(${PROJECT_NAME}
     Venom/EntryPoint.cpp
     Venom/Core/Layer.cpp
     Venom/Core/LayerStack.cpp
+    Venom/Gui/ImGuiLayer.cpp
 )
 
 # Adding Venom as an include directory
@@ -27,6 +28,9 @@ target_link_libraries(${PROJECT_NAME} glfw)
 # Adding glfw
 add_subdirectory(ext/glad)
 target_link_libraries(${PROJECT_NAME} glad)
+
+# Adding imgui
+include_directories(ext/imgui)
 
 # # Linking spdlog with Venom-Engine lib
 # set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Build shared library" FORCE) # Setting the build flag
