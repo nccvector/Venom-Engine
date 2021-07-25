@@ -93,6 +93,11 @@ namespace Venom
 
       // Setting the current context
       glfwMakeContextCurrent(m_Window);
+
+      // Doing GLAD stuff
+      int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+      VENOM_INFO("GLAD initialization status: {0}", status);
+
       glfwSetWindowUserPointer(m_Window, &m_Data);
       SetVSync(true);
 
