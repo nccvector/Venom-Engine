@@ -3,9 +3,7 @@
 
 int main()
 {
-  Venom::Log::Init(); // INITIALIZING LOG IMPORTANT!!!
-
-  // Getting application singleton
+  // Getting application singleton pointer
   Venom::Application *app = Venom::Application::Get();
   app->Run();
 
