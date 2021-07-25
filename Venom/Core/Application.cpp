@@ -1,10 +1,12 @@
 #include "Application.h"
+#include "Gui/ImGuiLayer.h"
 
 namespace Venom
 {
-  // Initializing the singleton pointer (needs to be initialized outside class)
-  Application* Application::s_Application;
+  // Initializing the PRIVATE singleton pointer (needs to be initialized outside class)
+  Application* Application::s_Application = nullptr;
 
+  // PUBLIC
   Application* Application::Get()
   {
     if(!Application::s_Application)
@@ -36,11 +38,13 @@ namespace Venom
   void Application::PushLayer(Layer* layer)
   {
     m_LayerStack.PushLayer(layer);
+    layer->OnAttach();
   }
 
   void Application::PushOverlay(Layer* overlay)
   {
     m_LayerStack.PushOverlay(overlay);
+    overlay->OnAttach();
   }
 
   bool Application::OnWindowClose(WindowCloseEvent& e)
@@ -66,6 +70,7 @@ namespace Venom
     }
   }
 
+  // PRIVATE
   Application::Application()
   {
     // Creating a new Window
@@ -76,5 +81,8 @@ namespace Venom
 
       // Initializing window
       m_Window->Init();
+
+      // Pushing ImGui Overlay
+      Application::PushOverlay(new ImGuiLayer);
   }
 }

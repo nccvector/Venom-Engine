@@ -23,6 +23,8 @@ namespace Venom
     bool OnWindowClose(WindowCloseEvent& e);
     void Run();
 
+    inline Window& GetWindow() { return *m_Window; }
+
   private:
     Application();
 
