@@ -13,22 +13,6 @@ using namespace Magnum::Math::Literals;
 VenomApplication::VenomApplication(const Arguments& arguments) :
     PickableApplication{"Graphics Template Application ", arguments} {
 
-    // CONFIGURING IMGUI
-    // SETTING CONFIG FLAGS FOR DOCKING ### ADDED LATER
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
-
-    // SETTING DEFAULT FONT
-    io.Fonts->AddFontFromFileTTF("../assets/fonts/OpenSans-Regular.ttf", 18.0f);
-    io.FontDefault = io.Fonts->Fonts[1];
-    m_ImGuiContext.relayout(Vector2{ windowSize() } / dpiScaling(),
-                                               windowSize(), framebufferSize());
-
     m_MeshSphere = MeshTools::compile(Primitives::icosphereSolid(3));
 
     for(size_t i = 0; i < 8; ++i) {
@@ -53,6 +37,7 @@ VenomApplication::VenomApplication(const Arguments& arguments) :
 /****************************************************************************************************/
 void VenomApplication::drawEvent() {
     GL::defaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
+
     ImGuiApplication::beginFrame();
 
     /* Update camera */
@@ -80,6 +65,7 @@ void VenomApplication::drawEvent() {
     ImGuiApplication::OnDraw();
 
     ImGuiApplication::endFrame();
+    
     swapBuffers();
     redraw();
 }
