@@ -8,9 +8,9 @@
 #include <Magnum/Shaders/Phong.h>
 
 /****************************************************************************************************/
-class MyApplication final : public PickableApplication  {
+class VenomApplication final : public PickableApplication  {
 public:
-    explicit MyApplication(const Arguments& arguments);
+    explicit VenomApplication(const Arguments& arguments);
 
 protected:
     void drawEvent() override;
@@ -23,4 +23,4 @@ protected:
 };
 
 /****************************************************************************************************/
-MAGNUM_APPLICATION_MAIN(MyApplication)
+MAGNUM_APPLICATION_MAIN(VenomApplication)

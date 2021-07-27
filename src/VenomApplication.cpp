@@ -1,5 +1,5 @@
 #include "DrawableObjects/PickableObject.h"
-#include "MyApplication.h"
+#include "VenomApplication.h"
 
 #include <Corrade/Containers/GrowableArray.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
@@ -10,7 +10,7 @@
 using namespace Magnum::Math::Literals;
 
 /****************************************************************************************************/
-MyApplication::MyApplication(const Arguments& arguments) :
+VenomApplication::VenomApplication(const Arguments& arguments) :
     PickableApplication{"Graphics Template Application ", arguments} {
 
     // CONFIGURING IMGUI
@@ -51,7 +51,7 @@ MyApplication::MyApplication(const Arguments& arguments) :
 }
 
 /****************************************************************************************************/
-void MyApplication::drawEvent() {
+void VenomApplication::drawEvent() {
     GL::defaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
     ImGuiApplication::beginFrame();
 
