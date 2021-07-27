@@ -1,4 +1,4 @@
-#include "Application/ImGuiApplication.h"
+#include "Application/ImGuiLayer.h"
 #include <Magnum/GL/Renderer.h>
 
 #include <imgui_internal.h>

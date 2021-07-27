@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Application/ImGuiApplication.h"
+#include "Application/ImGuiLayer.h"
 #include "DrawableObjects/PickableObject.h"
 
 #include <Magnum/Magnum.h>
