@@ -20,7 +20,7 @@ add_subdirectory(ext/magnum-integration EXCLUDE_FROM_ALL)
 
 ## Adding ImGuizmo and include folder
 include_directories(${PROJECT_SOURCE_DIR}/ext/ImGuizmo)
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/src)
 
 # FINDING AND LINKING
 find_package(Corrade REQUIRED Main)
@@ -41,9 +41,7 @@ file(GLOB_RECURSE SRC_CPP_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 # CREATING EXECUTABLE
 add_executable(${PROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/ext/ImGuizmo/ImGuizmo.cpp
-    ${INCLUDE_H_FILES}
     ${SRC_H_FILES}
-    ${INCLUDE_CPP_FILES}
     ${SRC_CPP_FILES}
 )
 

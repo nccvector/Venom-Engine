@@ -26,6 +26,10 @@ protected:
     void showMenuHeader();
     void showMenuFooter(bool bButtonResetCamera = true);
 
+    void BeginDockspace();
+    void EndDockspace();
+    void OnDraw();
+
     /* Window control */
     bool m_bShowMenu { true };
     ImGuiIntegration::Context m_ImGuiContext{ NoCreate };
