@@ -35,8 +35,6 @@ find_package(Magnum REQUIRED
 find_package(MagnumIntegration REQUIRED ImGui)
 
 # Getting files from include
-file(GLOB_RECURSE INCLUDE_H_FILES ${PROJECT_SOURCE_DIR}/include/*.h)
-file(GLOB_RECURSE INCLUDE_CPP_FILES ${PROJECT_SOURCE_DIR}/include/*.cpp)
 file(GLOB_RECURSE SRC_H_FILES ${PROJECT_SOURCE_DIR}/src/*.h)
 file(GLOB_RECURSE SRC_CPP_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
