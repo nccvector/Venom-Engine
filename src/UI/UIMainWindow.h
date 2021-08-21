@@ -9,7 +9,6 @@
 #ifndef UIMAINWINDOW_H
 #define UIMAINWINDOW_H
 
-#include <QtCore>
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
@@ -24,8 +23,6 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-
-#include <QDebug>
 
 
 QT_BEGIN_NAMESPACE
@@ -82,12 +79,6 @@ public:
         font.setPointSize(10);
         font.setStrikeOut(false);
         MainWindow->setFont(font);
-
-        // Loading stylesheet
-        QFile file("stylesheet.qss");
-        file.open(QFile::ReadOnly);
-        QString stylesheet = QLatin1String(file.readAll());
-        MainWindow->setStyleSheet(stylesheet);
 
         actionNew = new QAction(MainWindow);
         actionNew->setObjectName(QStringLiteral("actionNew"));

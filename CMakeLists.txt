@@ -17,14 +17,14 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 set(PROJECT_SOURCES
         src/main.cpp
         src/UI/MainWindow.cpp
-        src/UI/MainWindow.h
-        src/UI/UIMainWindow.h
+        src/MyOpenGLWidget.cpp
 )
 
 # Setting include directories
 include_directories(
     src
     src/UI
+    src/Shaders
 )
 
 # Adding executable
