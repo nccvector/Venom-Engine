@@ -1,60 +1,40 @@
-cmake_minimum_required(VERSION 3.4)
-project(VenomEngine)
+cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/ext/imgui" ${CMAKE_PREFIX_PATH})
+project(VenomEngine VERSION 0.1 LANGUAGES CXX)
 
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/ext/modules" ${CMAKE_MODULE_PATH})
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/ext/magnum-integration/modules" ${CMAKE_MODULE_PATH})
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
+set(CMAKE_AUTOUIC OFF)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
-# SETTING IMGUI OPTION
-set(WITH_IMGUI ON CACHE BOOL "" FORCE) # Magnum integration
-# set(WITH_SDL2APPLICATION ON CACHE BOOL "" FORCE)
-set(WITH_GLFWAPPLICATION ON CACHE BOOL "" FORCE)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add Corrade as a subproject
-add_subdirectory(ext/corrade EXCLUDE_FROM_ALL)
-add_subdirectory(ext/magnum EXCLUDE_FROM_ALL)
-add_subdirectory(ext/magnum-integration EXCLUDE_FROM_ALL)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
-## Adding ImGuizmo and include folder
-include_directories(${PROJECT_SOURCE_DIR}/ext/ImGuizmo)
-include_directories(${PROJECT_SOURCE_DIR}/src)
-
-# FINDING AND LINKING
-find_package(Corrade REQUIRED Main)
-find_package(Magnum REQUIRED
-    GL
-    GlfwApplication
-    MeshTools
-    Primitives
-    SceneGraph
-    Shaders
+set(PROJECT_SOURCES
+        src/main.cpp
+        src/UI/MainWindow.cpp
+        src/MyOpenGLWidget.cpp
 )
-find_package(MagnumIntegration REQUIRED ImGui)
 
-# Getting files from include
-file(GLOB_RECURSE H_FILES ${PROJECT_SOURCE_DIR}/src/*.h)
-file(GLOB_RECURSE CPP_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+# Setting include directories
+include_directories(
+    src
+    src/UI
+    src/Shaders
+)
 
-# CREATING EXECUTABLE
+# Adding executable
 add_executable(${PROJECT_NAME}
-    ${PROJECT_SOURCE_DIR}/ext/ImGuizmo/ImGuizmo.cpp
-    ${H_FILES}
-    ${CPP_FILES}
+    ${PROJECT_SOURCES}
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    Corrade::Main
-    Magnum::Application
-    Magnum::GL
-    Magnum::Magnum
-    Magnum::MeshTools
-    Magnum::Primitives
-    Magnum::SceneGraph
-    Magnum::Shaders
-    MagnumIntegration::ImGui
-)
+# Linking qt with executable
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-# add_subdirectory(src)
+# Copying streaming assets
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/stylesheet.qss
+    ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
