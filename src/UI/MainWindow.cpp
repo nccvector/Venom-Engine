@@ -1,3 +1,5 @@
+#include <Magnum/Platform/GLContext.h> // Platform
+
 #include "MainWindow.h"
 #include "UIMainWindow.h"
 
@@ -5,24 +7,36 @@
 
 #include <QtCore>
 
-MainWindow::MainWindow(QWidget *parent)
+using namespace Magnum; // REMOVE THIS !!!
+
+MainWindow::MainWindow(Platform::GLContext& context, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
     // Creating the OpenGL widget
-    MyOpenGLWidget *openglWidget = new MyOpenGLWidget(ui->centralwidget);
+    MyOpenGLWidget *openglWidget = new MyOpenGLWidget(context);
     // Adding the widget to glContainer (layout)
     ui->glContainer->addWidget(openglWidget);
 
-    // Un-comment this if there are problems with opengl (double check the opengl 
-    // linking in CMakeLists as well)
-    // // Setting up the OpenGL Widget by applying surface format
-    // // Need to apply format before calling show() method
-    // QSurfaceFormat format;
-    // format.setRenderableType(QSurfaceFormat::OpenGL);
-    // openglWidget->setFormat(format);
+    /* On macOS, this is needed in order to use GL 4.1 instead of GL 2.1. Qt
+       doesn't do that on its own, sorry. If you get only GL 3.0 on Mesa, try
+       uncommenting this as well -- however be aware that with the below code,
+       AMD and NVidia GPUs will get stuck at the version that's specified in
+       setVersion() (such as 4.1) instead of using the latest available (4.6).
+       To fix that, you'd need to detect the driver used and then either set
+       the version or not depending on what the particular driver likes best.
+       It's a total mess, right? */
+    #ifdef CORRADE_TARGET_APPLE
+    QSurfaceFormat format;
+    format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
+    format.setVersion(4, 1);
+    format.setProfile(QSurfaceFormat::CoreProfile);
+    QSurfaceFormat::setDefaultFormat(format);
+    w.setFormat(format);
+    #endif
 
     // Loading stylesheet
     QFile file("stylesheet.qss");
