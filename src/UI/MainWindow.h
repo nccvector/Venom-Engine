@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "MyOpenGLWidget.h"
+
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -20,5 +22,7 @@ public:
 
 public:
     Ui::MainWindow *ui;
+
+    MyOpenGLWidget *openglWidget;
 };
 #endif // MAINWINDOW_H

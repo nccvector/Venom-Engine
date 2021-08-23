@@ -1,8 +1,6 @@
 #include "MainWindow.h"
 #include "UIMainWindow.h"
 
-#include "MyOpenGLWidget.h"
-
 #include <QtCore>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -11,10 +9,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // // Creating the OpenGL widget
-    // MyOpenGLWidget *openglWidget = new MyOpenGLWidget(ui->centralwidget);
-    // // Adding the widget to glContainer (layout)
-    // ui->glContainer->addWidget(openglWidget);
+    // Creating the OpenGL widget
+    openglWidget = new MyOpenGLWidget(ui->centralwidget);
+    // Adding the widget to glContainer (layout)
+    ui->glContainer->addWidget(openglWidget);
 
     // // Un-comment this if there are problems with opengl (double check the opengl 
     // // linking in CMakeLists as well)

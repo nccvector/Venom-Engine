@@ -16,13 +16,20 @@ int main(int argc, char *argv[])
 
     w.show();
 
-    QWidget *qw = w.centralWidget();
+    QWidget *qw = w.openglWidget;
 
     PandaFramework framework;
     framework.open_framework();
 
     WindowProperties prop;
     framework.get_default_window_props(prop);
+
+    // Snapping the panda display to top-left of parent widget
+    LPoint2i p2i(0, 0);
+    prop.set_origin(p2i);
+
+    // Resize needs to be either called inside the "resize" method of custom widget
+    // or can be binded with the resize function of the parent widget
 
     prop.set_parent_window((size_t)qw->winId());
 
@@ -46,6 +53,8 @@ int main(int argc, char *argv[])
     }
 
     framework.close_framework();
+
+    current_thread->prepare_for_exit();
 
     return 0;
 }
