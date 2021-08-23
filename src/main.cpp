@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     WindowProperties prop;
     framework.get_default_window_props(prop);
 
-    prop.set_parent_window((size_t)qw->effectiveWinId());
+    prop.set_parent_window((size_t)qw->winId());
 
     // cout<<qw->winId()<<endl;
 
