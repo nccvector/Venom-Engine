@@ -1,13 +1,8 @@
 #include "MyOpenGLWidget.h"
 
 #include <QDebug>
-#include <QPainter>
-#include <QMatrix4x4>
-#include <QOpenGLFunctions>
 
-// #include "shaders03.h"
-
-MyOpenGLWidget::MyOpenGLWidget(QWidget* parent) : QOpenGLWidget(parent)
+MyOpenGLWidget::MyOpenGLWidget(QWidget* parent) : QWidget(parent)
 {
     framework = new PandaFramework();
     framework->open_framework();
@@ -42,25 +37,11 @@ MyOpenGLWidget::~MyOpenGLWidget()
 
 }
 
-void MyOpenGLWidget::initializeGL()
+void MyOpenGLWidget::resizeEvent(QResizeEvent* event)
 {
-
-}
-
-void MyOpenGLWidget::resizeGL(int width, int height)
-{
+    QSize qs = event->size();
     // Currently we are not handling width/height changes
-    (void)width;
-    (void)height;
-    prop.set_size(width, height);
+    prop.set_size(qs.width(), qs.height());
 
     window->get_graphics_window()->request_properties(prop);
-
-    qDebug() << width << " " << height;
 }
-
-void MyOpenGLWidget::paintGL()
-{
-
-}
-
