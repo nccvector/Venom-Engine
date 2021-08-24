@@ -7,11 +7,10 @@
 #include "genericAsyncTask.h"
 #include "asyncTaskManager.h"
 
-#include <QOpenGLWidget>
-#include <QOpenGLFunctions>
-#include <QOpenGLShaderProgram>
+#include <QResizeEvent>
+#include <QtWidgets/QWidget>
 
-class MyOpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
+class MyOpenGLWidget : public QWidget
 {
 //    Q_OBJECT
 public:
@@ -19,9 +18,7 @@ public:
     ~MyOpenGLWidget();
 
 protected:
-    void initializeGL() Q_DECL_OVERRIDE;
-    void resizeGL(int width, int height) Q_DECL_OVERRIDE;
-    void paintGL() Q_DECL_OVERRIDE;
+    void resizeEvent(QResizeEvent* event) Q_DECL_OVERRIDE;
 
 public:
     PandaFramework *framework;
