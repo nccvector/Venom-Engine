@@ -56,7 +56,7 @@ endif ()
  
 set(CMAKE_DEBUG_POSTFIX "_d")
  
-set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dist")
+set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}")
  
 find_package(OGRE REQUIRED)
  
@@ -112,41 +112,42 @@ set_target_properties(${APP} PROPERTIES DEBUG_POSTFIX _d)
  
 target_link_libraries(${APP} Qt${QT_VERSION_MAJOR}::Widgets ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${OGRE_Overlay_LIBRARIES})
  
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/media)
  
 # post-build copy for win32
 if(WIN32 AND NOT MINGW)
 	add_custom_command( TARGET ${APP} PRE_BUILD
 		COMMAND if not exist .\\dist\\bin mkdir .\\dist\\bin )
 	add_custom_command( TARGET ${APP} POST_BUILD
-		COMMAND copy \"$(TargetPath)\" .\\dist\\bin )
+		COMMAND copy \"$(TargetPath)\" . )
 endif(WIN32 AND NOT MINGW)
 
+# OUTPUT PATH
 if(MINGW OR UNIX)
-	set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/dist/bin)
+	set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 endif(MINGW OR UNIX)
  
 if(WIN32)
  
 	install(TARGETS ${APP}
-		RUNTIME DESTINATION bin
+		RUNTIME DESTINATION ./
 		CONFIGURATIONS All)
  
-	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/Media
+	install(DIRECTORY ${CMAKE_SOURCE_DIR}/Media
 		DESTINATION ./
 		CONFIGURATIONS Release RelWithDebInfo Debug
 	)
  
-	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins.cfg
-		${CMAKE_SOURCE_DIR}/dist/bin/resources.cfg
-		DESTINATION bin
+	install(FILES ${CMAKE_SOURCE_DIR}/plugins.cfg
+		${CMAKE_SOURCE_DIR}/resources.cfg
+		DESTINATION ./
 		CONFIGURATIONS Release RelWithDebInfo
 	)
  
-	install(FILES ${CMAKE_SOURCE_DIR}/dist/bin/plugins_d.cfg
-		${CMAKE_SOURCE_DIR}/dist/bin/resources_d.cfg
-		DESTINATION bin
+	install(FILES ${CMAKE_SOURCE_DIR}/plugins_d.cfg
+		${CMAKE_SOURCE_DIR}/resources_d.cfg
+		DESTINATION ./
 		CONFIGURATIONS Debug
 	)
  
@@ -156,7 +157,7 @@ if(WIN32)
 		${OGRE_PLUGIN_DIR_REL}/RenderSystem_Direct3D9.dll
 		${OGRE_PLUGIN_DIR_REL}/RenderSystem_GL.dll
 		${OGRE_PLUGIN_DIR_REL}/libOIS.dll
-		DESTINATION bin
+		DESTINATION ./
 		CONFIGURATIONS Release RelWithDebInfo
 	)
  
@@ -164,7 +165,7 @@ if(WIN32)
 		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_Direct3D9_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/RenderSystem_GL_d.dll
 		${OGRE_PLUGIN_DIR_DBG}/libOIS_d.dll
-		DESTINATION bin
+		DESTINATION ./
 		CONFIGURATIONS Debug
 	)
  
@@ -172,13 +173,13 @@ if(WIN32)
    # because they're not linked statically (it worked with 1.7.1 though)
    install(FILES ${Boost_DATE_TIME_LIBRARY_RELEASE}
       ${Boost_THREAD_LIBRARY_RELEASE}
-      DESTINATION bin
+      DESTINATION ./
       CONFIGURATIONS Release RelWithDebInfo
    )
  
    install(FILES ${Boost_DATE_TIME_LIBRARY_DEBUG}
       ${Boost_THREAD_LIBRARY_DEBUG}
-      DESTINATION bin
+      DESTINATION ./
       CONFIGURATIONS Debug
    )
 endif(WIN32)
