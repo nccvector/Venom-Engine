@@ -8,9 +8,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     // Creating the OpenGL widget
-    openglWidget = new MyOpenGLWidget(ui->centralwidget);
+    ogreWindow = new QTOgreWindow();
+
+    // Creating a widget out of Window object
+    QWidget* renderingContainer = QWidget::createWindowContainer(ogreWindow);
+
     // Adding the widget to glContainer (layout)
-    ui->glContainer->addWidget(openglWidget);
+    ui->glContainer->addWidget(renderingContainer);
 
     // // Un-comment this if there are problems with opengl (double check the opengl 
     // // linking in CMakeLists as well)
