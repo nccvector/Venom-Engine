@@ -17,15 +17,32 @@ int main(int argc, char *argv[])
     QString stylesheet = QLatin1String(file.readAll());
     w.setStyleSheet(stylesheet);
 
-    // this is the main loop
-    Thread *current_thread = Thread::get_current_thread();
-    while (w.openglWidget->framework->do_frame(current_thread)) {
-        a.processEvents();
-    }
-
-    w.openglWidget->framework->close_framework();
-
-    current_thread->prepare_for_exit();
-
-    return 0;
+    return a.exec();
 }
+
+
+// /*
+
+// Place the include along with your other includes where you will be creating and/or calling the above QTOgreWindow:
+
+// */
+
+
+// #include "QTOgreWindow.h"
+
+// /*
+
+// In the method you are creating/calling a QTOgreWindow:
+
+// */
+
+// QTOgreWindow* ogreWindow = new QTOgreWindow();
+// QWidget* renderingContainer = QWidget::createWindowContainer(ogreWindow);
+
+// /*
+
+// As an example, the below method places the QTOgreWindow we just created inside of a QTabWidget as a tab.
+
+// */
+
+// mainTabs->addTab(renderingContainer, tr("New Ogre Window"));

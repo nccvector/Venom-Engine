@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "MyOpenGLWidget.h"
+#include "QTOgreWindow.h"
 
 #include <QMainWindow>
 
@@ -23,6 +23,6 @@ public:
 public:
     Ui::MainWindow *ui;
 
-    MyOpenGLWidget *openglWidget;
+    QTOgreWindow *ogreWindow;
 };
 #endif // MAINWINDOW_H
