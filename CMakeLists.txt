@@ -4,7 +4,7 @@ project(VenomEngine VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(CMAKE_AUTOUIC OFF)
+set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -20,6 +20,7 @@ set(PROJECT_SOURCES
         src/main.cpp
         src/UI/MainWindow.cpp
         src/MyOpenGLWidget.cpp
+        ext/BreezeThemes/breeze.qrc
 )
 
 # Setting include directories
@@ -33,6 +34,9 @@ include_directories(
 
 # Panda libraries path
 link_directories(/usr/lib/x86_64-linux-gnu/panda3d)
+
+# Setting up themes
+# include(ext/modules/BreezeThemes.cmake)
 
 # Adding executable
 add_executable(${PROJECT_NAME}
@@ -53,5 +57,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 # Copying streaming assets
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/stylesheet.qss
-    ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+file(GLOB StyleSheets ${CMAKE_CURRENT_SOURCE_DIR}/assets/*.qss)
+foreach(file ${StyleSheets})
+    configure_file(${file} ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+endforeach()

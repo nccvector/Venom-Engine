@@ -30,6 +30,8 @@ MyOpenGLWidget::MyOpenGLWidget(QWidget* parent) : QWidget(parent)
     // Apply scale and position transforms to the model.
     scene.set_scale(0.25f, 0.25f, 0.25f);
     scene.set_pos(-8, 42, 0);
+
+    
 }
 
 MyOpenGLWidget::~MyOpenGLWidget()

@@ -1,7 +1,5 @@
 #include "MainWindow.h"
-#include "UIMainWindow.h"
-
-#include <QtCore>
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,12 +19,6 @@ MainWindow::MainWindow(QWidget *parent)
     // // QSurfaceFormat format;
     // // format.setRenderableType(QSurfaceFormat::OpenGL);
     // // openglWidget->setFormat(format);
-
-    // Loading stylesheet
-    QFile file("stylesheet.qss");
-    file.open(QFile::ReadOnly);
-    QString stylesheet = QLatin1String(file.readAll());
-    this->setStyleSheet(stylesheet);
 }
 
 MainWindow::~MainWindow()
