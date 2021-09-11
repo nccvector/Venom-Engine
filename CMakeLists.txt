@@ -44,11 +44,11 @@ include("tools/cmake/common.cmake")
 # Copying streaming assets
 file(GLOB StyleSheets ${CMAKE_CURRENT_SOURCE_DIR}/assets/*.qss)
 foreach(file ${StyleSheets})
-    configure_file(${file} ${CMAKE_CURRENT_BINARY_DIR}/dist/bin COPYONLY)
+    configure_file(${file} ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 endforeach()
 
 # Copying streaming assets
 file(GLOB Configs ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
 foreach(file ${Configs})
-    configure_file(${file} ${CMAKE_CURRENT_BINARY_DIR}/dist/bin COPYONLY)
+    configure_file(${file} ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 endforeach()
