@@ -1,7 +1,7 @@
 #include "QTOgreWindow.h"
-#if OGRE_VERSION >= ((2 << 16) | (0 << 8) | 0)
-#include <Compositor/OgreCompositorManager2.h>
-#endif
+
+#include<string>	// to_string
+#include <stdlib.h> // rand, srand
 
 /*
 Note that we pass any supplied QWindow parent to the base QWindow class. This is necessary should we
@@ -18,7 +18,7 @@ QTOgreWindow::QTOgreWindow(QWindow *parent)
 {
 	setAnimating(true);
 	installEventFilter(this);
-	m_ogreBackground = Ogre::ColourValue(0.0f, 0.5f, 1.0f);
+	m_ogreBackground = Ogre::ColourValue(0.1f, 0.1f, 0.15f);
 }
 
 /*
@@ -165,14 +165,7 @@ void QTOgreWindow::initialize()
 	The rest of the code in the initialization function is standard Ogre3D scene code. Consult other
 	tutorials for specifics.
 	*/
-#if OGRE_VERSION >= ((2 << 16) | (0 << 8) | 0)
-	const size_t numThreads = std::max<int>(1, Ogre::PlatformInformation::getNumLogicalCores());
-	Ogre::InstancingThreadedCullingMethod threadedCullingMethod = Ogre::INSTANCING_CULLING_SINGLETHREAD;
-	if (numThreads > 1)threadedCullingMethod = Ogre::INSTANCING_CULLING_THREADED;
-	m_ogreSceneMgr = m_ogreRoot->createSceneManager(Ogre::ST_GENERIC, numThreads, threadedCullingMethod);
-#else
 	m_ogreSceneMgr = m_ogreRoot->createSceneManager(Ogre::ST_GENERIC);
-#endif
 	
 	m_ogreCamera = m_ogreSceneMgr->createCamera("MainCamera");
 	m_ogreCamera->setPosition(Ogre::Vector3(0.0f, 0.0f, 10.0f));
@@ -180,13 +173,10 @@ void QTOgreWindow::initialize()
 	m_ogreCamera->setNearClipDistance(0.1f);
 	m_ogreCamera->setFarClipDistance(200.0f);
 	m_cameraMan = new OgreQtBites::SdkQtCameraMan(m_ogreCamera);   // create a default camera controller
+	m_cameraMan->setTopSpeed(1.0f);
 
-#if OGRE_VERSION >= ((2 << 16) | (0 << 8) | 0)
-	createCompositor();
-#else
 	Ogre::Viewport* pViewPort = m_ogreWindow->addViewport(m_ogreCamera);
 	pViewPort->setBackgroundColour(m_ogreBackground);
-#endif
 
 	m_ogreCamera->setAspectRatio(
 		Ogre::Real(m_ogreWindow->getWidth()) / Ogre::Real(m_ogreWindow->getHeight()));
@@ -209,58 +199,49 @@ void QTOgreWindow::createScene()
 	*/
 	m_ogreSceneMgr->setAmbientLight(Ogre::ColourValue(0.5f, 0.5f, 0.5f));
 
-#if OGRE_VERSION >= ((2 << 16) | (0 << 8) | 0)
-	Ogre::Entity* sphereMesh = m_ogreSceneMgr->createEntity(Ogre::SceneManager::PT_SPHERE);
-#else
-	Ogre::Entity* sphereMesh = m_ogreSceneMgr->createEntity("mySphere", Ogre::SceneManager::PT_SPHERE);
-#endif
+	for (int i=0; i<10; i++)
+	{
+		Ogre::Entity* sphereMesh = m_ogreSceneMgr->createEntity("mySphere" + std::to_string(i), Ogre::SceneManager::PT_CUBE);
 
-	Ogre::SceneNode* childSceneNode = m_ogreSceneMgr->getRootSceneNode()->createChildSceneNode();
+		Ogre::SceneNode* childSceneNode = m_ogreSceneMgr->getRootSceneNode()->createChildSceneNode();
 
-	childSceneNode->attachObject(sphereMesh);
+		childSceneNode->attachObject(sphereMesh);
 
-	Ogre::MaterialPtr sphereMaterial = Ogre::MaterialManager::getSingleton().create("SphereMaterial",
-		Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+		Ogre::MaterialPtr sphereMaterial = Ogre::MaterialManager::getSingleton().create("SphereMaterial",
+			Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 
-	sphereMaterial->getTechnique(0)->getPass(0)->setAmbient(0.1f, 0.1f, 0.1f);
-	sphereMaterial->getTechnique(0)->getPass(0)->setDiffuse(0.2f, 0.2f, 0.2f, 1.0f);
-	sphereMaterial->getTechnique(0)->getPass(0)->setSpecular(0.9f, 0.9f, 0.9f, 1.0f);
-	//sphereMaterial->setAmbient(0.2f, 0.2f, 0.5f);
-	//sphereMaterial->setSelfIllumination(0.2f, 0.2f, 0.1f);
+		// Setting material
+		sphereMaterial->getTechnique(0)->getPass(0)->setAmbient(0.1f, 0.1f, 0.1f);
+		sphereMaterial->getTechnique(0)->getPass(0)->setDiffuse(0.75f, 0.75f, 0.75f, 1.0f);
+		sphereMaterial->getTechnique(0)->getPass(0)->setSpecular(0.9f, 0.9f, 0.9f, 1.0f);
+		//sphereMaterial->setAmbient(0.2f, 0.2f, 0.5f);
+		//sphereMaterial->setSelfIllumination(0.2f, 0.2f, 0.1f);
 
-	sphereMesh->setMaterialName("SphereMaterial");
-	childSceneNode->setPosition(Ogre::Vector3(0.0f, 0.0f, 0.0f));
-	childSceneNode->setScale(Ogre::Vector3(0.01f, 0.01f, 0.01f)); // Radius, in theory.
-
-#if OGRE_VERSION >= ((2 << 16) | (0 << 8) | 0)
-	Ogre::SceneNode* pLightNode = m_ogreSceneMgr->getRootSceneNode()->createChildSceneNode();
-	Ogre::Light* light = m_ogreSceneMgr->createLight();
-	pLightNode->attachObject(light);
-	pLightNode->setPosition(20.0f, 80.0f, 50.0f);
-#else
+		// Setting mesh name, position and orientation
+		sphereMesh->setMaterialName("SphereMaterial");
+		childSceneNode->setPosition(Ogre::Vector3(rand()%10, rand()%10, rand()%10));
+		childSceneNode->setScale(Ogre::Vector3(0.01f, 0.01f, 0.01f)); // Radius, in theory.
+	}
+	
 	Ogre::Light* light = m_ogreSceneMgr->createLight("MainLight");
 	light->setPosition(20.0f, 80.0f, 50.0f);
-#endif
 }
 
-#if OGRE_VERSION >= ((2 << 16) | (0 << 8) | 0)
-void QTOgreWindow::createCompositor()
+void QTOgreWindow::RotateObjects()
 {
-	/*
-	Example compositor
-	Derive this class for your own purpose and overwite this function to have a working Ogre
-	widget with your own compositor.
-	*/
-	Ogre::CompositorManager2* compMan = m_ogreRoot->getCompositorManager2();
-	const Ogre::String workspaceName = "default scene workspace";
-	const Ogre::IdString workspaceNameHash = workspaceName;
-	compMan->createBasicWorkspaceDef(workspaceName, m_ogreBackground);
-	compMan->addWorkspace(m_ogreSceneMgr, m_ogreWindow, m_ogreCamera, workspaceNameHash, true);
+	Ogre::Node* cnode;
+	auto cIter = m_ogreSceneMgr->getRootSceneNode()->getChildIterator();
+
+	while (cIter.hasMoreElements())
+	{
+		cnode = cIter.getNext();
+		cnode->yaw((Ogre::Radian)0.0001f);
+	} 
 }
-#endif
 
 void QTOgreWindow::render()
 {
+	RotateObjects();
 	/*
 	How we tied in the render function for OGre3D with QWindow's render function. This is what gets call
 	repeatedly. Note that we don't call this function directly; rather we use the renderNow() function
