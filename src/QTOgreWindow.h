@@ -41,6 +41,7 @@ public:
 	virtual void render();
 	virtual void initialize();
 	virtual void createScene();
+	void RotateObjects();
 #if OGRE_VERSION >= ((2 << 16) | (0 << 8) | 0)
 	virtual void createCompositor();
 #endif
