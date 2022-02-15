@@ -5,6 +5,8 @@
 // For the console example, we are using a more C++ like approach of declaring a class to hold both data and functions.
 class Console
 {
+    static Console* instance;
+
     char                  InputBuf[256];
     ImVector<char*>       Items;
     ImVector<const char*> Commands;
@@ -14,7 +16,6 @@ class Console
     bool                  AutoScroll;
     bool                  ScrollToBottom;
 
-public:
     Console()
     {
         // IMGUI_DEMO_MARKER("Examples/Console");
@@ -31,6 +32,15 @@ public:
         ScrollToBottom = false;
         AddLog("Welcome to Dear ImGui!");
     }
+public:
+    static Console* getSingleton()
+    {
+        if (!instance)
+            instance = new Console;
+        
+        return instance;
+    }
+
     ~Console()
     {
         ClearLog();
@@ -350,3 +360,6 @@ public:
         return 0;
     }
 };
+
+// Initializing the singleton
+Console* Console::instance = 0;

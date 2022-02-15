@@ -4,8 +4,18 @@
 
 class Dockspace
 {
-public:
+    static Dockspace* instance;
+
     Dockspace() { }
+public:
+
+    static Dockspace* getSingleton()
+    {
+        if (!instance)
+            instance = new Dockspace;
+        
+        return instance;
+    }
 
     void Begin()
     {
@@ -104,3 +114,6 @@ public:
         ImGui::End();
     }
 };
+
+// Initializing the singleton
+Dockspace* Dockspace::instance = 0;

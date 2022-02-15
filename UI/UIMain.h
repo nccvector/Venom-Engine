@@ -15,11 +15,7 @@ Created all the necessary widgets, also sets up initial resources like fonts
 
 class UIMain
 {
-    Dockspace* dockspace;
-    Toolbar* toolbar;
-    Console* console;
-
-    public:
+public:
     UIMain()
     {
         //////////////////////////////////////////////////////////
@@ -58,9 +54,9 @@ class UIMain
         //////////////////////////////////////////////////////////
 
         // CREATING DOCKS
-        dockspace = new Dockspace();
-        toolbar = new Toolbar();
-        console = new Console();
+        Dockspace::getSingleton();  // Initializing dockspace
+        Toolbar::getSingleton();    // Initializing toolbar
+        Console::getSingleton();    // Initializing console
 
         // Assigning callbacks
         // toolbar->AttachAllCallbacks(&ButtonCallback);
@@ -72,14 +68,15 @@ class UIMain
         Ogre::ImGuiOverlay::NewFrame();
 
         // [dockspace]
-        dockspace->Begin();
+        Dockspace::getSingleton()->Begin();
 
-        toolbar->Draw();
-        console->Draw("Console", nullptr);
+        Toolbar::getSingleton()->Draw();
+        Console::getSingleton()->Draw("Console", nullptr);
+
         ImGui::ShowDemoWindow();
 
         // [dockspace]
-        dockspace->End();
+        Dockspace::getSingleton()->End();
     }
 
     void SetDarkThemeColors() {
