@@ -1,3 +1,5 @@
+#pragma once
+
 // OGRE INCLUDES
 #include "OgreResourceManager.h"
 #include "OgreResourceGroupManager.h"
@@ -58,8 +60,15 @@ public:
         Toolbar::getSingleton();    // Initializing toolbar
         Console::getSingleton();    // Initializing console
 
-        // Assigning callbacks
-        // toolbar->AttachAllCallbacks(&ButtonCallback);
+        // Assigning callbacks to toolbar
+        Toolbar* tb = Toolbar::getSingleton();
+        tb->SetPickCallback     (&UIMain::PickCallback);
+        tb->SetMoveCallback     (&UIMain::MoveCallback);
+        tb->SetRotateCallback   (&UIMain::RotateCallback);
+        tb->SetScaleCallback    (&UIMain::RotateCallback);
+        tb->SetObjectCallback   (&UIMain::RotateCallback);
+        tb->SetCubeCallback     (&UIMain::RotateCallback);
+        tb->SetConeCallback     (&UIMain::RotateCallback);
     }
 
     void Draw()
@@ -124,9 +133,18 @@ public:
         colors[ImGuiCol_TitleBgCollapsed] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
     }
 
-    // static void ButtonCallback()
-    // {
-    //     std::cout << "PRESSED" << std::endl;
-    //     console->AddLog(" YO MO WOAH ");
-    // }
+    static void PickCallback()
+    {
+        Console::getSingleton()->AddLog("PICK");
+    }
+
+    static void MoveCallback()
+    {
+        Console::getSingleton()->AddLog("MOVE");
+    }
+
+    static void RotateCallback()
+    {
+        Console::getSingleton()->AddLog("ROTATE");
+    }
 };

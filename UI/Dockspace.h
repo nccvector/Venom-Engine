@@ -1,3 +1,5 @@
+#pragma once
+
 // IMGUI INCLUDES
 #include "imgui.h"
 

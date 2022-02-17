@@ -1,3 +1,5 @@
+#pragma once
+
 // IMGUI INCLUDES
 #include "OgreResourceManager.h"
 #include "OgreResourceGroupManager.h"
@@ -7,9 +9,12 @@
 #include<vector>
 #include<string>
 #include <map>
+#include <unordered_map>
 #include<tuple>
 
 #include "imgui_internal.h"
+
+#include "Console.h"
 
 // Toolbar callback signature
 typedef void (*ToolbarCallback) ();
@@ -17,18 +22,19 @@ typedef void (*ToolbarCallback) ();
 
 class Toolbar
 {
+    // Singleton instance
     static Toolbar* instance;
 
     // Sorted list of tools
     std::map<int, std::tuple<std::string, ImTextureID, ToolbarCallback>> tools 
     {
-        { 0, std::make_tuple("pick",     nullptr, []() -> void { }) },
-        { 1, std::make_tuple("move",     nullptr, []() -> void { }) },
-        { 2, std::make_tuple("rotate",   nullptr, []() -> void { }) },
-        { 3, std::make_tuple("scale",    nullptr, []() -> void { }) },
-        { 4, std::make_tuple("object",   nullptr, []() -> void { }) },
-        { 5, std::make_tuple("cube",     nullptr, []() -> void { }) },
-        { 6, std::make_tuple("cone",     nullptr, []() -> void { }) }
+        { 0, std::make_tuple("pick",     nullptr, nullptr) },
+        { 1, std::make_tuple("move",     nullptr, nullptr) },
+        { 2, std::make_tuple("rotate",   nullptr, nullptr) },
+        { 3, std::make_tuple("scale",    nullptr, nullptr) },
+        { 4, std::make_tuple("object",   nullptr, nullptr) },
+        { 5, std::make_tuple("cube",     nullptr, nullptr) },
+        { 6, std::make_tuple("cone",     nullptr, nullptr) }
     };
 
     Toolbar()
@@ -46,7 +52,7 @@ class Toolbar
             tools[tool.first] = std::make_tuple(
                 std::get<0>(tool.second),       // tool name
                 imtexid,                        // texture handle
-                []() -> void {  }               // callback
+                nullptr
             );
         }
     }
@@ -71,18 +77,14 @@ public:
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 
-        for(auto tool : tools)
+        for(int i=0; i<tools.size(); i++)
         {
             // Getting textureID and callback
-            ImTextureID     texID = std::get<1>(tool.second);
-            ToolbarCallback toolCallback = std::get<2>(tool.second);
+            ImTextureID     texID = std::get<1>(tools[i]);
 
-            // Using the tool button
+            // Using the button and using callback
             if(ImGui::ImageButton((void*)(intptr_t) texID, ImVec2(32, 32)))
-            {
-                // Calling assigned callback
-                toolCallback();
-            }
+                std::get<2>(tools[i])();
         }
 
         ImGui::PopStyleVar();
@@ -90,11 +92,40 @@ public:
         ImGui::End();
     }
 
-    void AttachAllCallbacks(ToolbarCallback callback)
+    // CALLBACK ATTACHMENT FUNCTIONS
+    void SetPickCallback(ToolbarCallback callback)
     {
-        // Initializing tools
-        for(auto tool : tools)
-            std::get<2>(tool.second) = callback;
+        std::get<2>(tools[0]) = callback;
+    }
+
+    void SetMoveCallback(ToolbarCallback callback)
+    {
+        std::get<2>(tools[1]) = callback;
+    }
+
+    void SetRotateCallback(ToolbarCallback callback)
+    {
+        std::get<2>(tools[2]) = callback;
+    }
+
+    void SetScaleCallback(ToolbarCallback callback)
+    {
+        std::get<2>(tools[3]) = callback;
+    }
+
+    void SetObjectCallback(ToolbarCallback callback)
+    {
+        std::get<2>(tools[4]) = callback;
+    }
+
+    void SetCubeCallback(ToolbarCallback callback)
+    {
+        std::get<2>(tools[5]) = callback;
+    }
+
+    void SetConeCallback(ToolbarCallback callback)
+    {
+        std::get<2>(tools[6]) = callback;
     }
 };
 
