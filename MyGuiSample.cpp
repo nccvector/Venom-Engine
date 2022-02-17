@@ -126,24 +126,47 @@ public:
         // manually call sample callback to ensure correct order
         return true;
     }
+
+    void windowResized(Ogre::RenderWindow* rw)
+    {
+        Console::getSingleton()->AddLog("RESIZED");
+
+        unsigned int width, height;
+        int left, top;
+        rw->getMetrics(width, height, left, top);
+
+        // Create some random ogre object at origin
+        SceneManager* scnMgr = getRoot()->getSceneManager("Main");
+        scnMgr->getCamera("Main Camera")->setAspectRatio(Real(width) / Real(height));
+    }
 };
 
 void TutorialApplication::setup()
 {
     // do not forget to call the base first
     ApplicationContext::setup();
+
+    // // Setting start window size
+    // getRenderWindow()->resize(1280, 720);
+    // getRenderWindow()->setVSyncEnabled(true);
+
+    // Adding input listener
     addInputListener(this);
 
     // ADDING RESOURCE LOCATIONS
     ResourceGroupManager::getSingleton().addResourceLocation("../Media", "FileSystem");
     ResourceGroupManager::getSingleton().addResourceLocation("../Media/fonts", "FileSystem");
 
-    // Initializing UI
-    uimain = new UIMain();
-
     // get a pointer to the already created root
     Root* root = getRoot();
-    SceneManager* scnMgr = root->createSceneManager();
+
+    // root->getRenderSystem()->setConfigOption("Video Mode", "1280 x 720 @ 32-bit colour");
+    // root->initialise(true);
+
+    SceneManager* scnMgr = root->createSceneManager(DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "Main");
+
+    // Initializing UI
+    uimain = new UIMain(root);
 
     ////////////////////////////////
     scnMgr->addRenderQueueListener(&OverlaySystem::getSingleton());
@@ -227,7 +250,7 @@ void TutorialApplication::setup()
     //! [directlightdir]
     SceneNode* directionalLightNode = scnMgr->getRootSceneNode()->createChildSceneNode();
     directionalLightNode->attachObject(directionalLight);
-    directionalLightNode->setDirection(Vector3(0, -1, 1));
+    directionalLightNode->setDirection(Vector3(-2, -1, -1));
     //! [directlightdir]
 
     scnMgr->setAmbientLight(ColourValue(0.1, 0.1, 0.1));

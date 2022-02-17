@@ -1,10 +1,13 @@
 #pragma once
 
 // OGRE INCLUDES
+// #include "Ogre.h"
+// #include "OgreApplicationContext.h"
 #include "OgreResourceManager.h"
 #include "OgreResourceGroupManager.h"
 #include "OgreFontManager.h"
 #include "OgreImGuiOverlay.h"
+#include "OgreSceneManagerEnumerator.h"
 
 // CUSTOM INCLUDES
 #include "Dockspace.h"
@@ -13,13 +16,19 @@
 
 /*
 Created all the necessary widgets, also sets up initial resources like fonts
+UIMain needs access to ogre root to create and read info of many objects
 */
 
 class UIMain
 {
+    static Ogre::Root* m_root;
+
 public:
-    UIMain()
+    UIMain(Ogre::Root* root)
     {
+        // Reference to Ogre root
+        m_root = root;
+
         //////////////////////////////////////////////////////////
         // ADDING IMGUI OVERLAY
         auto imguiOverlay = new Ogre::ImGuiOverlay();
@@ -65,10 +74,10 @@ public:
         tb->SetPickCallback     (&UIMain::PickCallback);
         tb->SetMoveCallback     (&UIMain::MoveCallback);
         tb->SetRotateCallback   (&UIMain::RotateCallback);
-        tb->SetScaleCallback    (&UIMain::RotateCallback);
-        tb->SetObjectCallback   (&UIMain::RotateCallback);
-        tb->SetCubeCallback     (&UIMain::RotateCallback);
-        tb->SetConeCallback     (&UIMain::RotateCallback);
+        tb->SetScaleCallback    (&UIMain::ScaleCallback);
+        tb->SetObjectCallback   (&UIMain::ObjectCallback);
+        tb->SetCubeCallback     (&UIMain::CubeCallback);
+        tb->SetConeCallback     (&UIMain::ConeCallback);
     }
 
     void Draw()
@@ -135,16 +144,48 @@ public:
 
     static void PickCallback()
     {
-        Console::getSingleton()->AddLog("PICK");
+        Console::getSingleton()->AddLog("PICK TOOL EVENT");
     }
 
     static void MoveCallback()
     {
-        Console::getSingleton()->AddLog("MOVE");
+        Console::getSingleton()->AddLog("MOVE TOOL EVENT");
     }
 
     static void RotateCallback()
     {
-        Console::getSingleton()->AddLog("ROTATE");
+        Console::getSingleton()->AddLog("ROTATE TOOL EVENT");
+    }
+
+    static void ScaleCallback()
+    {
+        Console::getSingleton()->AddLog("SCALE TOOL EVENT");
+    }
+
+    static void ObjectCallback()
+    {
+        Console::getSingleton()->AddLog("OBJECT TOOL EVENT");
+
+        // Create some random ogre object at origin
+        Ogre::SceneManager* scnMgr = UIMain::m_root->getSceneManager("Main");
+
+        // Creating an ogre entity and attaching to scene
+        Ogre::Entity* ogreEntity = scnMgr->createEntity("ogrehead.mesh");
+        Ogre::SceneNode* ogreNode = scnMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0, 50, 0));
+        ogreNode->attachObject(ogreEntity);
+
+    }
+
+    static void CubeCallback()
+    {
+        Console::getSingleton()->AddLog("CUBE TOOL EVENT");
+    }
+
+    static void ConeCallback()
+    {
+        Console::getSingleton()->AddLog("CONE TOOL EVENT");
     }
 };
+
+// Initializing the statics
+Ogre::Root* UIMain::m_root = 0;
