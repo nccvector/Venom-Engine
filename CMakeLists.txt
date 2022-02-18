@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-project(MyGuiSample)
+project(VenomEngine)
 
 # required for Ogre 1.11+
 set(CMAKE_CXX_STANDARD 11)
@@ -13,8 +13,9 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/UI
     ${CMAKE_SOURCE_DIR}/UI/imgui
     ${CMAKE_SOURCE_DIR}/States
+    ${CMAKE_SOURCE_DIR}/Application
 )
 
 # Adding my gui sample exe
-add_executable(${PROJECT_NAME} MyGuiSample.cpp)
+add_executable(${PROJECT_NAME} VenomEngine.cpp)
 target_link_libraries(${PROJECT_NAME} OgreBites)

@@ -54,7 +54,7 @@ THE SOFTWARE
 using namespace Ogre;
 using namespace OgreBites;
 
-class TutorialApplication
+class Application
         : public ApplicationContext
         , public InputListener
 {
@@ -69,10 +69,17 @@ class TutorialApplication
     // LISTENER CHAIN (can be trays, ui or camera/viewport)
     InputListenerChain mListenerChain;
 
-public:
-    TutorialApplication(): ApplicationContext("OgreTutorialApp") {};
+    // Private constructor
+    Application(): ApplicationContext("Venom Engine") {};
 
-    ~TutorialApplication() {};
+public:
+    static Application& Singleton()
+    {
+        static Application instance;
+        return instance;
+    }
+
+    ~Application() {};
 
     // Imgui event capture
     bool keyPressed(const KeyboardEvent& evt) 
@@ -154,14 +161,22 @@ public:
     }
 };
 
-void TutorialApplication::setup()
+void Application::setup()
 {
     // do not forget to call the base first
     ApplicationContext::setup();
 
+    // get a pointer to the already created root
+    Root* root = getRoot();
+
+    // Setting startup resolution (can also set fullscreen here)
+    root->getRenderSystem()->setConfigOption("Video Mode", "1280 x 720 @ 32-bit colour");
+    root->getRenderSystem()->_initialise();
+
     // // Setting start window size
     // getRenderWindow()->resize(1280, 720);
     // getRenderWindow()->setVSyncEnabled(true);
+    // getRenderWindow()->initialize();
 
     // Adding input listener
     addInputListener(this);
@@ -169,12 +184,6 @@ void TutorialApplication::setup()
     // ADDING RESOURCE LOCATIONS
     ResourceGroupManager::getSingleton().addResourceLocation("../Media", "FileSystem");
     ResourceGroupManager::getSingleton().addResourceLocation("../Media/fonts", "FileSystem");
-
-    // get a pointer to the already created root
-    Root* root = getRoot();
-
-    // root->getRenderSystem()->setConfigOption("Video Mode", "1280 x 720 @ 32-bit colour");
-    // root->initialise(true);
 
     SceneManager* scnMgr = root->createSceneManager(DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "Main");
 
@@ -272,24 +281,3 @@ void TutorialApplication::setup()
     scnMgr->setAmbientLight(ColourValue(0.1, 0.1, 0.1));
     scnMgr->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_MODULATIVE);
 }
-
-
-int main(int argc, char **argv)
-{
-    try
-    {
-        TutorialApplication app;
-        app.initApp();
-        app.getRoot()->startRendering();
-        app.closeApp();
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << "Error occurred during execution: " << e.what() << '\n';
-        return 1;
-    }
-
-    return 0;
-}
-
-//! [starter]
