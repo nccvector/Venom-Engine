@@ -48,6 +48,8 @@ THE SOFTWARE
 
 // CUSTOM INCLUDES
 #include "UIMain.h"
+#include "ApplicationStateMachine.h"
+#include "PickState.h"
 
 using namespace Ogre;
 using namespace OgreBites;
@@ -58,6 +60,7 @@ class TutorialApplication
 {
     // CREATING UIMAIN OBJECT
     UIMain* uimain;
+    StateMachine* sm;
 
     // CREATING INPUT LISTENERS
     std::unique_ptr<ImGuiInputListener> mImguiListener;
@@ -127,6 +130,16 @@ public:
         return true;
     }
 
+    bool frameRenderingQueued(const Ogre::FrameEvent& evt)
+    {
+        // Call update of current state
+        ApplicationStateMachine::Singleton().GetCurrentState()->HandleInput();
+        ApplicationStateMachine::Singleton().GetCurrentState()->Update();
+        ApplicationStateMachine::Singleton().GetCurrentState()->LogicalUpdate();
+
+        return true;
+    }
+
     void windowResized(Ogre::RenderWindow* rw)
     {
         Console::getSingleton()->AddLog("RESIZED");
@@ -167,6 +180,9 @@ void TutorialApplication::setup()
 
     // Initializing UI
     uimain = new UIMain(root);
+
+    // Initializing state machine
+    ApplicationStateMachine::Singleton().ChangeState(&PickState::Singleton());
 
     ////////////////////////////////
     scnMgr->addRenderQueueListener(&OverlaySystem::getSingleton());

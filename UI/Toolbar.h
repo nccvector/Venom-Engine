@@ -16,6 +16,12 @@
 
 #include "Console.h"
 
+/*
+I am trying to make toolbar in such a way so as to re-use in other projects. That's
+why I am trying to give it callbacks from outside, so that the specific functionalities
+on button presses remain outside this class
+*/
+
 // Toolbar callback signature
 typedef void (*ToolbarCallback) ();
 

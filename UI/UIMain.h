@@ -14,6 +14,13 @@
 #include "Toolbar.h"
 #include "Console.h"
 
+// Importing states
+#include "ApplicationStateMachine.h"
+#include "PickState.h"
+#include "MoveState.h"
+#include "RotateState.h"
+#include "ScaleState.h"
+
 /*
 Created all the necessary widgets, also sets up initial resources like fonts
 UIMain needs access to ogre root to create and read info of many objects
@@ -144,21 +151,33 @@ public:
 
     static void PickCallback()
     {
+        // Switching state
+        ApplicationStateMachine::Singleton().ChangeState(&PickState::Singleton());
+
         Console::getSingleton()->AddLog("PICK TOOL EVENT");
     }
 
     static void MoveCallback()
     {
+        // Switching state
+        ApplicationStateMachine::Singleton().ChangeState(&MoveState::Singleton());
+
         Console::getSingleton()->AddLog("MOVE TOOL EVENT");
     }
 
     static void RotateCallback()
     {
+        // Switching state
+        ApplicationStateMachine::Singleton().ChangeState(&RotateState::Singleton());
+
         Console::getSingleton()->AddLog("ROTATE TOOL EVENT");
     }
 
     static void ScaleCallback()
     {
+        // Switching state
+        ApplicationStateMachine::Singleton().ChangeState(&ScaleState::Singleton());
+
         Console::getSingleton()->AddLog("SCALE TOOL EVENT");
     }
 

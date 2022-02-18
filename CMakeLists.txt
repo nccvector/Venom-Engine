@@ -12,6 +12,7 @@ find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 include_directories(
     ${CMAKE_SOURCE_DIR}/UI
     ${CMAKE_SOURCE_DIR}/UI/imgui
+    ${CMAKE_SOURCE_DIR}/States
 )
 
 # Adding my gui sample exe
