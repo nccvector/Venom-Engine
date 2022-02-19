@@ -26,6 +26,11 @@ Created all the necessary widgets, also sets up initial resources like fonts
 UIMain needs access to ogre root to create and read info of many objects
 */
 
+using namespace Venom::States;
+
+namespace Venom::UI
+{
+
 class UIMain
 {
     static Ogre::Root* m_root;
@@ -77,14 +82,14 @@ public:
         Console::getSingleton();    // Initializing console
 
         // Assigning callbacks to toolbar
-        Toolbar* tb = Toolbar::getSingleton();
-        tb->SetPickCallback     (&UIMain::PickCallback);
-        tb->SetMoveCallback     (&UIMain::MoveCallback);
-        tb->SetRotateCallback   (&UIMain::RotateCallback);
-        tb->SetScaleCallback    (&UIMain::ScaleCallback);
-        tb->SetObjectCallback   (&UIMain::ObjectCallback);
-        tb->SetCubeCallback     (&UIMain::CubeCallback);
-        tb->SetConeCallback     (&UIMain::ConeCallback);
+        Toolbar& tb = Toolbar::getSingleton();
+        tb.SetPickCallback     (&UIMain::PickCallback);
+        tb.SetMoveCallback     (&UIMain::MoveCallback);
+        tb.SetRotateCallback   (&UIMain::RotateCallback);
+        tb.SetScaleCallback    (&UIMain::ScaleCallback);
+        tb.SetObjectCallback   (&UIMain::ObjectCallback);
+        tb.SetCubeCallback     (&UIMain::CubeCallback);
+        tb.SetConeCallback     (&UIMain::ConeCallback);
     }
 
     void Draw()
@@ -93,15 +98,15 @@ public:
         Ogre::ImGuiOverlay::NewFrame();
 
         // [dockspace]
-        Dockspace::getSingleton()->Begin();
+        Dockspace::getSingleton().Begin();
 
-        Toolbar::getSingleton()->Draw();
-        Console::getSingleton()->Draw("Console", nullptr);
+        Toolbar::getSingleton().Draw();
+        Console::getSingleton().Draw("Console", nullptr);
 
         ImGui::ShowDemoWindow();
 
         // [dockspace]
-        Dockspace::getSingleton()->End();
+        Dockspace::getSingleton().End();
     }
 
     void SetDarkThemeColors() {
@@ -154,7 +159,7 @@ public:
         // Switching state
         ApplicationStateMachine::Singleton().ChangeState(&PickState::Singleton());
 
-        Console::getSingleton()->AddLog("PICK TOOL EVENT");
+        Console::getSingleton().AddLog("PICK TOOL EVENT");
     }
 
     static void MoveCallback()
@@ -162,7 +167,7 @@ public:
         // Switching state
         ApplicationStateMachine::Singleton().ChangeState(&MoveState::Singleton());
 
-        Console::getSingleton()->AddLog("MOVE TOOL EVENT");
+        Console::getSingleton().AddLog("MOVE TOOL EVENT");
     }
 
     static void RotateCallback()
@@ -170,7 +175,7 @@ public:
         // Switching state
         ApplicationStateMachine::Singleton().ChangeState(&RotateState::Singleton());
 
-        Console::getSingleton()->AddLog("ROTATE TOOL EVENT");
+        Console::getSingleton().AddLog("ROTATE TOOL EVENT");
     }
 
     static void ScaleCallback()
@@ -178,12 +183,12 @@ public:
         // Switching state
         ApplicationStateMachine::Singleton().ChangeState(&ScaleState::Singleton());
 
-        Console::getSingleton()->AddLog("SCALE TOOL EVENT");
+        Console::getSingleton().AddLog("SCALE TOOL EVENT");
     }
 
     static void ObjectCallback()
     {
-        Console::getSingleton()->AddLog("OBJECT TOOL EVENT");
+        Console::getSingleton().AddLog("OBJECT TOOL EVENT");
 
         // Create some random ogre object at origin
         Ogre::SceneManager* scnMgr = UIMain::m_root->getSceneManager("Main");
@@ -197,14 +202,16 @@ public:
 
     static void CubeCallback()
     {
-        Console::getSingleton()->AddLog("CUBE TOOL EVENT");
+        Console::getSingleton().AddLog("CUBE TOOL EVENT");
     }
 
     static void ConeCallback()
     {
-        Console::getSingleton()->AddLog("CONE TOOL EVENT");
+        Console::getSingleton().AddLog("CONE TOOL EVENT");
     }
 };
 
 // Initializing the statics
 Ogre::Root* UIMain::m_root = 0;
+
+}

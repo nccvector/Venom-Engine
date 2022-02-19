@@ -3,6 +3,11 @@
 #include "State.h"
 #include "Console.h"
 
+using namespace Venom::UI;
+
+namespace Venom::States
+{
+
 class PickState : public State
 {
     PickState() {}
@@ -16,16 +21,18 @@ public:
 
     void Enter() override
     {
-        Console::getSingleton()->AddLog("Entered Pick State");
+        Console::getSingleton().AddLog("Entered Pick State");
     }
 
     void Update() override
     {
-        Console::getSingleton()->AddLog("Pick::Update()");
+        Console::getSingleton().AddLog("Pick::Update()");
     }
 
     void Exit() override
     {
-        Console::getSingleton()->AddLog("Exiting Pick State");
+        Console::getSingleton().AddLog("Exiting Pick State");
     }
 };
+
+}

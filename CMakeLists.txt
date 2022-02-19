@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project(VenomEngine)
 
 # required for Ogre 1.11+
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 ## [discover_ogre]
 # The COMPONENTS part checks that OGRE was built the way we need it
@@ -13,6 +13,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/UI
     ${CMAKE_SOURCE_DIR}/UI/imgui
     ${CMAKE_SOURCE_DIR}/States
+    ${CMAKE_SOURCE_DIR}/States/Abstract
     ${CMAKE_SOURCE_DIR}/Application
 )
 

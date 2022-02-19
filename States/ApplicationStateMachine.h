@@ -3,6 +3,11 @@
 #include "State.h"
 #include "StateMachine.h"
 
+using namespace Venom::Abstract;
+
+namespace Venom::States
+{
+
 class ApplicationStateMachine : public StateMachine
 {
     ApplicationStateMachine() {}
@@ -14,3 +19,5 @@ public:
         return instance;
     }
 };
+
+}

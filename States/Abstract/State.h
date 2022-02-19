@@ -1,5 +1,8 @@
 #pragma once
 
+namespace Venom::Abstract
+{
+
 class State
 {
 public:
@@ -9,4 +12,6 @@ public:
     virtual void Update() {}
     virtual void LogicalUpdate() {}
     virtual void Exit() {}
-};
+};   
+
+}

@@ -22,6 +22,9 @@ why I am trying to give it callbacks from outside, so that the specific function
 on button presses remain outside this class
 */
 
+namespace Venom::UI
+{
+
 // Toolbar callback signature
 typedef void (*ToolbarCallback) ();
 
@@ -64,11 +67,9 @@ class Toolbar
     }
 
 public:
-    static Toolbar* getSingleton()
+    static Toolbar& getSingleton()
     {
-        if (!instance)
-            instance = new Toolbar;
-        
+        static Toolbar instance;
         return instance;
     }
 
@@ -137,3 +138,5 @@ public:
 
 // Initializing the singleton
 Toolbar* Toolbar::instance = 0;
+
+}

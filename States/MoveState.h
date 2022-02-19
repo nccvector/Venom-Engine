@@ -3,6 +3,11 @@
 #include "State.h"
 #include "Console.h"
 
+using namespace Venom::UI;
+
+namespace Venom::States
+{
+
 class MoveState : public State
 {
     MoveState() {}
@@ -16,16 +21,18 @@ public:
 
     void Enter() override
     {
-        Console::getSingleton()->AddLog("Entered Move State");
+        Console::getSingleton().AddLog("Entered Move State");
     }
 
     void Update() override
     {
-        Console::getSingleton()->AddLog("Move::Update()");
+        Console::getSingleton().AddLog("Move::Update()");
     }
 
     void Exit() override
     {
-        Console::getSingleton()->AddLog("Exiting Move State");
+        Console::getSingleton().AddLog("Exiting Move State");
     }
 };
+
+}

@@ -3,6 +3,11 @@
 #include "State.h"
 #include "Console.h"
 
+using namespace Venom::UI;
+
+namespace Venom::States
+{
+
 class ScaleState : public State
 {
     ScaleState() {}
@@ -16,16 +21,18 @@ public:
 
     void Enter() override
     {
-        Console::getSingleton()->AddLog("Entered Scale State");
+        Console::getSingleton().AddLog("Entered Scale State");
     }
 
     void Update() override
     {
-        Console::getSingleton()->AddLog("Scale::Update()");
+        Console::getSingleton().AddLog("Scale::Update()");
     }
 
     void Exit() override
     {
-        Console::getSingleton()->AddLog("Exiting Scale State");
+        Console::getSingleton().AddLog("Exiting Scale State");
     }
 };
+
+}

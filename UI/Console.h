@@ -5,6 +5,10 @@
 
 // Demonstrate creating a simple console window, with scrolling, filtering, completion and history.
 // For the console example, we are using a more C++ like approach of declaring a class to hold both data and functions.
+
+namespace Venom::UI
+{
+
 class Console
 {
     static Console* instance;
@@ -34,12 +38,11 @@ class Console
         ScrollToBottom = false;
         AddLog("Welcome to Dear ImGui!");
     }
+    
 public:
-    static Console* getSingleton()
+    static Console& getSingleton()
     {
-        if (!instance)
-            instance = new Console;
-        
+        static Console instance;
         return instance;
     }
 
@@ -365,3 +368,5 @@ public:
 
 // Initializing the singleton
 Console* Console::instance = 0;
+
+}

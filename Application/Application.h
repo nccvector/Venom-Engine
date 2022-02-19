@@ -54,13 +54,18 @@ THE SOFTWARE
 using namespace Ogre;
 using namespace OgreBites;
 
+using namespace Venom::UI;
+using namespace Venom::States;
+
+namespace Venom::Application
+{
+
 class Application
         : public ApplicationContext
         , public InputListener
 {
     // CREATING UIMAIN OBJECT
     UIMain* uimain;
-    StateMachine* sm;
 
     // CREATING INPUT LISTENERS
     std::unique_ptr<ImGuiInputListener> mImguiListener;
@@ -149,7 +154,7 @@ public:
 
     void windowResized(Ogre::RenderWindow* rw)
     {
-        Console::getSingleton()->AddLog("RESIZED");
+        Console::getSingleton().AddLog("RESIZED");
 
         unsigned int width, height;
         int left, top;
@@ -280,4 +285,6 @@ void Application::setup()
 
     scnMgr->setAmbientLight(ColourValue(0.1, 0.1, 0.1));
     scnMgr->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_MODULATIVE);
+}
+
 }

@@ -3,6 +3,11 @@
 #include "State.h"
 #include "Console.h"
 
+using namespace Venom::UI;
+
+namespace Venom::States
+{
+
 class RotateState : public State
 {
     RotateState() {}
@@ -16,16 +21,18 @@ public:
 
     void Enter() override
     {
-        Console::getSingleton()->AddLog("Entered Rotate State");
+        Console::getSingleton().AddLog("Entered Rotate State");
     }
 
     void Update() override
     {
-        Console::getSingleton()->AddLog("Rotate::Update()");
+        Console::getSingleton().AddLog("Rotate::Update()");
     }
 
     void Exit() override
     {
-        Console::getSingleton()->AddLog("Exiting Rotate State");
+        Console::getSingleton().AddLog("Exiting Rotate State");
     }
 };
+
+}

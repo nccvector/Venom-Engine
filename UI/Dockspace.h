@@ -4,6 +4,9 @@
 #include "imgui.h"
 
 
+namespace Venom::UI
+{
+
 class Dockspace
 {
     static Dockspace* instance;
@@ -11,11 +14,9 @@ class Dockspace
     Dockspace() { }
 public:
 
-    static Dockspace* getSingleton()
+    static Dockspace& getSingleton()
     {
-        if (!instance)
-            instance = new Dockspace;
-        
+        static Dockspace instance;
         return instance;
     }
 
@@ -119,3 +120,5 @@ public:
 
 // Initializing the singleton
 Dockspace* Dockspace::instance = 0;
+
+}

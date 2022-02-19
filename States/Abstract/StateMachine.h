@@ -2,6 +2,9 @@
 
 #include "State.h"
 
+namespace Venom::Abstract
+{
+
 class StateMachine
 {
     State* m_currentState = nullptr;
@@ -47,3 +50,5 @@ public:
         }
     }
 };
+
+}
