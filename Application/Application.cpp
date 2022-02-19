@@ -48,7 +48,9 @@ bool Application::mouseWheelRolled(const MouseWheelEvent& evt)
 }
 
 bool Application::mousePressed(const MouseButtonEvent& evt) 
-{ 
+{
+    PickState::Singleton().mousePressed(evt);
+    
     return mListenerChain.mousePressed(evt); 
 }
 
@@ -61,7 +63,6 @@ bool Application::textInput (const TextInputEvent& evt)
 { 
     return mListenerChain.textInput (evt); 
 }
-
 
 bool Application::frameStarted(const Ogre::FrameEvent& evt)
 {
@@ -77,9 +78,7 @@ bool Application::frameStarted(const Ogre::FrameEvent& evt)
 bool Application::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
     // Call update of current state
-    ApplicationStateMachine::Singleton().GetCurrentState()->HandleInput();
     ApplicationStateMachine::Singleton().GetCurrentState()->Update();
-    ApplicationStateMachine::Singleton().GetCurrentState()->LogicalUpdate();
 
     return true;
 }

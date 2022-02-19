@@ -1,6 +1,7 @@
 #pragma once
 
 #include "State.h"
+#include "OgreInput.h"
 
 namespace Venom::States
 {
@@ -17,6 +18,8 @@ public:
     }
 
     void Enter() override;
+
+    bool mousePressed(const OgreBites::MouseButtonEvent& evt) override;
 
     void Update() override;
 

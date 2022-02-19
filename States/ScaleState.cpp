@@ -8,17 +8,17 @@ namespace Venom::States
 
 void ScaleState::Enter()
 {
-    Console::getSingleton().AddLog("Entered Scale State");
+    // Console::getSingleton().AddLog("Entered Scale State");
 }
 
 void ScaleState::Update()
 {
-    Console::getSingleton().AddLog("Scale::Update()");
+    // Console::getSingleton().AddLog("Scale::Update()");
 }
 
 void ScaleState::Exit()
 {
-    Console::getSingleton().AddLog("Exiting Scale State");
+    // Console::getSingleton().AddLog("Exiting Scale State");
 }
 
 }

@@ -8,17 +8,17 @@ namespace Venom::States
 
 void RotateState::Enter()
 {
-    Console::getSingleton().AddLog("Entered Rotate State");
+    // Console::getSingleton().AddLog("Entered Rotate State");
 }
 
 void RotateState::Update()
 {
-    Console::getSingleton().AddLog("Rotate::Update()");
+    // Console::getSingleton().AddLog("Rotate::Update()");
 }
 
 void RotateState::Exit()
 {
-    Console::getSingleton().AddLog("Exiting Rotate State");
+    // Console::getSingleton().AddLog("Exiting Rotate State");
 }
 
 }
