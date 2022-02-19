@@ -68,12 +68,15 @@ class Application
     InputListenerChain mListenerChain;
 
     // Private constructor
-    Application(): ApplicationContext("Venom Engine") {};
+    Application() : ApplicationContext("Venom Engine") {};
 
 public:
     // Application Vars
     Ogre::Root* root;
     Ogre::SceneManager* sceneManager;
+    Ogre::Camera* camera;
+    Ogre::RaySceneQuery* raySceneQuery;
+    Ogre::RaySceneQueryResult* raySceneQueryResult;
 
     static Application& Singleton()
     {
@@ -105,15 +108,6 @@ public:
     void windowResized(Ogre::RenderWindow* rw)              override;
 
     void setup()                                            override;
-
-    // Toolbar callbacks
-    static void PickCallback();
-    static void MoveCallback();
-    static void RotateCallback();
-    static void ScaleCallback();
-    static void ObjectCallback();
-    static void CubeCallback();
-    static void ConeCallback();
 };
 
 }

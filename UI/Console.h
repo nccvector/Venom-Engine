@@ -2,6 +2,10 @@
 
 #include "imgui.h"
 
+#include <ctype.h>          // toupper
+#include <stdio.h>          // vsnprintf, sscanf, printf
+#include <stdlib.h>         // NULL, malloc, free, atoi
+
 
 // Demonstrate creating a simple console window, with scrolling, filtering, completion and history.
 // For the console example, we are using a more C++ like approach of declaring a class to hold both data and functions.
@@ -11,8 +15,6 @@ namespace Venom::UI
 
 class Console
 {
-    static Console* instance;
-
     char                  InputBuf[256];
     ImVector<char*>       Items;
     ImVector<const char*> Commands;
@@ -38,7 +40,7 @@ class Console
         ScrollToBottom = false;
         AddLog("Welcome to Dear ImGui!");
     }
-    
+
 public:
     static Console& getSingleton()
     {
@@ -365,8 +367,5 @@ public:
         return 0;
     }
 };
-
-// Initializing the singleton
-Console* Console::instance = 0;
 
 }

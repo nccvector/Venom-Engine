@@ -1,14 +1,11 @@
 #pragma once
 
 #include "State.h"
-#include "Console.h"
-
-using namespace Venom::UI;
 
 namespace Venom::States
 {
 
-class PickState : public State
+class PickState : public Venom::Abstract::State
 {
     PickState() {}
 
@@ -19,20 +16,11 @@ public:
         return instance;
     }
 
-    void Enter() override
-    {
-        Console::getSingleton().AddLog("Entered Pick State");
-    }
+    void Enter() override;
 
-    void Update() override
-    {
-        Console::getSingleton().AddLog("Pick::Update()");
-    }
+    void Update() override;
 
-    void Exit() override
-    {
-        Console::getSingleton().AddLog("Exiting Pick State");
-    }
+    void Exit() override;
 };
 
 }

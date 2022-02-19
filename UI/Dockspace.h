@@ -9,8 +9,6 @@ namespace Venom::UI
 
 class Dockspace
 {
-    static Dockspace* instance;
-
     Dockspace() { }
 public:
 
@@ -117,8 +115,5 @@ public:
         ImGui::End();
     }
 };
-
-// Initializing the singleton
-Dockspace* Dockspace::instance = 0;
 
 }

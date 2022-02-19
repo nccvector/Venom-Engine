@@ -21,5 +21,7 @@ include_directories(
 add_executable(${PROJECT_NAME} 
     VenomEngine.cpp
     Application/Application.cpp
+    UI/UIMain.cpp
+    States/PickState.cpp
     )
 target_link_libraries(${PROJECT_NAME} OgreBites)

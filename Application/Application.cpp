@@ -2,8 +2,15 @@
 
 // CUSTOM INCLUDES
 #include "UIMain.h"
+#include "Dockspace.h"
+#include "Toolbar.h"
+#include "Console.h"
+
 #include "ApplicationStateMachine.h"
 #include "PickState.h"
+#include "MoveState.h"
+#include "RotateState.h"
+#include "ScaleState.h"
 
 using namespace Ogre;
 using namespace OgreBites;
@@ -94,7 +101,7 @@ void Application::setup()
     // do not forget to call the base first
     ApplicationContext::setup();
 
-    // get a pointer to the already created root
+    // Initializing root pointer
     root = getRoot();
 
     // Setting startup resolution (can also set fullscreen here)
@@ -116,8 +123,12 @@ void Application::setup()
     // Initializing UIMain
     UIMain::Singleton();
 
-    // Creating a scene manager
+    // Creating and Initializing sceneManager pointer
     sceneManager = root->createSceneManager(DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "Main");
+
+    // Initializing raySceneQuery
+    raySceneQuery = sceneManager->createRayQuery(Ogre::Ray(), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
+    raySceneQuery->setSortByDistance(true);
 
     // Initializing state machine
     ApplicationStateMachine::Singleton().ChangeState(&PickState::Singleton());
@@ -129,19 +140,21 @@ void Application::setup()
     RTShader::ShaderGenerator* shadergen = RTShader::ShaderGenerator::getSingletonPtr();
     shadergen->addSceneManager(sceneManager);
 
-    // CREATING A MAIN CAMERA
-    SceneNode* camNode = sceneManager->getRootSceneNode()->createChildSceneNode();
-    Camera* cam = sceneManager->createCamera("Main Camera");
-    cam->setNearClipDistance(5);
-    camNode->attachObject(cam);
+    // Initializing the camera node
+    SceneNode* cameraNode = sceneManager->getRootSceneNode()->createChildSceneNode();
+    
+    // CREATING A MAIN CAMERA and assigning to cameraNode
+    camera = sceneManager->createCamera("Main Camera");
+    camera->setNearClipDistance(5);
+    cameraNode->attachObject(camera);
 
     // CAMERA CONTROLLER
-    mCameraMan.reset(new CameraMan(camNode));
+    mCameraMan.reset(new CameraMan(cameraNode));
     mCameraMan->setStyle(OgreBites::CS_ORBIT);
 
     // Setting initial transform
-    camNode->setPosition(500, 500, 500);
-    camNode->lookAt(Vector3(0, 0, 0), Node::TransformSpace::TS_WORLD);
+    cameraNode->setPosition(500, 500, 500);
+    cameraNode->lookAt(Vector3(0, 0, 0), Node::TransformSpace::TS_WORLD);
 
     // ADDING INPUT LISTENERS
     mImguiListener.reset(new ImGuiInputListener());
@@ -152,7 +165,7 @@ void Application::setup()
     
 
     //! [addviewport]
-    Viewport* vp = getRenderWindow()->addViewport(cam);
+    Viewport* vp = getRenderWindow()->addViewport(camera);
     //! [addviewport]
 
     //! [viewportback]
@@ -160,7 +173,7 @@ void Application::setup()
     //! [viewportback]
 
     //! [cameraratio]
-    cam->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
+    camera->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
     //! [cameraratio]
 
     //! [plane]
@@ -209,70 +222,8 @@ void Application::setup()
 
     sceneManager->setAmbientLight(ColourValue(0.1, 0.1, 0.1));
     sceneManager->setShadowTechnique(ShadowTechnique::SHADOWTYPE_STENCIL_MODULATIVE);
-
-    // Assigning callbacks to toolbar
-    Toolbar& tb = Toolbar::getSingleton();
-    tb.SetPickCallback     (&Application::PickCallback);
-    tb.SetMoveCallback     (&Application::MoveCallback);
-    tb.SetRotateCallback   (&Application::RotateCallback);
-    tb.SetScaleCallback    (&Application::ScaleCallback);
-    tb.SetObjectCallback   (&Application::ObjectCallback);
-    tb.SetCubeCallback     (&Application::CubeCallback);
-    tb.SetConeCallback     (&Application::ConeCallback);
 }
 
-// Toolbar Callbacks
-void Application::PickCallback()
-{
-    // Switching state
-    ApplicationStateMachine::Singleton().ChangeState(&PickState::Singleton());
-
-    Console::getSingleton().AddLog("PICK TOOL EVENT");
-}
-
-void Application::MoveCallback()
-{
-    // Switching state
-    ApplicationStateMachine::Singleton().ChangeState(&MoveState::Singleton());
-
-    Console::getSingleton().AddLog("MOVE TOOL EVENT");
-}
-
-void Application::RotateCallback()
-{
-    // Switching state
-    ApplicationStateMachine::Singleton().ChangeState(&RotateState::Singleton());
-
-    Console::getSingleton().AddLog("ROTATE TOOL EVENT");
-}
-
-void Application::ScaleCallback()
-{
-    // Switching state
-    ApplicationStateMachine::Singleton().ChangeState(&ScaleState::Singleton());
-
-    Console::getSingleton().AddLog("SCALE TOOL EVENT");
-}
-
-void Application::ObjectCallback()
-{
-    // Console::getSingleton().AddLog("OBJECT TOOL EVENT");
-
-    // // Creating an ogre entity and attaching to scene
-    // Ogre::Entity* ogreEntity = app->sceneManager->createEntity("ogrehead.mesh");
-    // Ogre::SceneNode* ogreNode = app->sceneManager->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0, 50, 0));
-    // ogreNode->attachObject(ogreEntity);
-
-}
-
-void Application::CubeCallback()
-{
-    Console::getSingleton().AddLog("CUBE TOOL EVENT");
-}
-
-void Application::ConeCallback()
-{
-    Console::getSingleton().AddLog("CONE TOOL EVENT");
-}
+// void ScreenToWorldRa
 
 }

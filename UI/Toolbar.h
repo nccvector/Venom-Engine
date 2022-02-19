@@ -31,9 +31,6 @@ typedef void (*ToolbarCallback) ();
 
 class Toolbar
 {
-    // Singleton instance
-    static Toolbar* instance;
-
     // Sorted list of tools
     std::map<int, std::tuple<std::string, ImTextureID, ToolbarCallback>> tools 
     {
@@ -136,8 +133,5 @@ public:
         std::get<2>(tools[6]) = callback;
     }
 };
-
-// Initializing the singleton
-Toolbar* Toolbar::instance = 0;
 
 }
