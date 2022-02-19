@@ -1,14 +1,11 @@
 #pragma once
 
 #include "State.h"
-#include "Console.h"
-
-using namespace Venom::UI;
 
 namespace Venom::States
 {
 
-class ScaleState : public State
+class ScaleState : public Venom::Abstract::State
 {
     ScaleState() {}
 
@@ -19,20 +16,11 @@ public:
         return instance;
     }
 
-    void Enter() override
-    {
-        Console::getSingleton().AddLog("Entered Scale State");
-    }
+    void Enter() override;
 
-    void Update() override
-    {
-        Console::getSingleton().AddLog("Scale::Update()");
-    }
+    void Update() override;
 
-    void Exit() override
-    {
-        Console::getSingleton().AddLog("Exiting Scale State");
-    }
+    void Exit() override;
 };
 
 }

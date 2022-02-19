@@ -1,14 +1,11 @@
 #pragma once
 
 #include "State.h"
-#include "Console.h"
-
-using namespace Venom::UI;
 
 namespace Venom::States
 {
 
-class RotateState : public State
+class RotateState : public Venom::Abstract::State
 {
     RotateState() {}
 
@@ -19,20 +16,11 @@ public:
         return instance;
     }
 
-    void Enter() override
-    {
-        Console::getSingleton().AddLog("Entered Rotate State");
-    }
+    void Enter() override;
 
-    void Update() override
-    {
-        Console::getSingleton().AddLog("Rotate::Update()");
-    }
+    void Update() override;
 
-    void Exit() override
-    {
-        Console::getSingleton().AddLog("Exiting Rotate State");
-    }
+    void Exit() override;
 };
 
 }

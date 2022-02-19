@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.0)
 project(VenomEngine)
 
 # required for Ogre 1.11+
@@ -23,5 +23,8 @@ add_executable(${PROJECT_NAME}
     Application/Application.cpp
     UI/UIMain.cpp
     States/PickState.cpp
+    States/MoveState.cpp
+    States/RotateState.cpp
+    States/ScaleState.cpp
     )
 target_link_libraries(${PROJECT_NAME} OgreBites)

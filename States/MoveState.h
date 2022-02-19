@@ -1,14 +1,11 @@
 #pragma once
 
 #include "State.h"
-#include "Console.h"
-
-using namespace Venom::UI;
 
 namespace Venom::States
 {
 
-class MoveState : public State
+class MoveState : public Venom::Abstract::State
 {
     MoveState() {}
 
@@ -19,20 +16,11 @@ public:
         return instance;
     }
 
-    void Enter() override
-    {
-        Console::getSingleton().AddLog("Entered Move State");
-    }
+    void Enter() override;
 
-    void Update() override
-    {
-        Console::getSingleton().AddLog("Move::Update()");
-    }
+    void Update() override;
 
-    void Exit() override
-    {
-        Console::getSingleton().AddLog("Exiting Move State");
-    }
+    void Exit() override;
 };
 
 }
