@@ -33,14 +33,17 @@ namespace Venom::UI
 
 class UIMain
 {
-    static Ogre::Root* m_root;
 
 public:
-    UIMain(Ogre::Root* root)
-    {
-        // Reference to Ogre root
-        m_root = root;
 
+    static UIMain& Singleton()
+    {
+        static UIMain instance;
+        return instance;
+    }
+
+    UIMain()
+    {
         //////////////////////////////////////////////////////////
         // ADDING IMGUI OVERLAY
         auto imguiOverlay = new Ogre::ImGuiOverlay();
@@ -190,13 +193,13 @@ public:
     {
         Console::getSingleton().AddLog("OBJECT TOOL EVENT");
 
-        // Create some random ogre object at origin
-        Ogre::SceneManager* scnMgr = UIMain::m_root->getSceneManager("Main");
+        // // Create some random ogre object at origin
+        // Ogre::SceneManager* scnMgr = UIMain::m_root->getSceneManager("Main");
 
-        // Creating an ogre entity and attaching to scene
-        Ogre::Entity* ogreEntity = scnMgr->createEntity("ogrehead.mesh");
-        Ogre::SceneNode* ogreNode = scnMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0, 50, 0));
-        ogreNode->attachObject(ogreEntity);
+        // // Creating an ogre entity and attaching to scene
+        // Ogre::Entity* ogreEntity = scnMgr->createEntity("ogrehead.mesh");
+        // Ogre::SceneNode* ogreNode = scnMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0, 50, 0));
+        // ogreNode->attachObject(ogreEntity);
 
     }
 
@@ -210,8 +213,5 @@ public:
         Console::getSingleton().AddLog("CONE TOOL EVENT");
     }
 };
-
-// Initializing the statics
-Ogre::Root* UIMain::m_root = 0;
 
 }

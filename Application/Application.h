@@ -64,9 +64,6 @@ class Application
         : public ApplicationContext
         , public InputListener
 {
-    // CREATING UIMAIN OBJECT
-    UIMain* uimain;
-
     // CREATING INPUT LISTENERS
     std::unique_ptr<ImGuiInputListener> mImguiListener;
     std::unique_ptr<CameraMan> mCameraMan;           // basic camera controller
@@ -136,7 +133,7 @@ public:
         ApplicationContext::frameStarted(evt);
 
         // DRAWING UI
-        uimain->Draw();
+        UIMain::Singleton().Draw();
 
         // manually call sample callback to ensure correct order
         return true;
@@ -190,10 +187,11 @@ void Application::setup()
     ResourceGroupManager::getSingleton().addResourceLocation("../Media", "FileSystem");
     ResourceGroupManager::getSingleton().addResourceLocation("../Media/fonts", "FileSystem");
 
-    SceneManager* scnMgr = root->createSceneManager(DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "Main");
+    // Initializing UIMain
+    UIMain::Singleton();
 
-    // Initializing UI
-    uimain = new UIMain(root);
+    // Creating a scene manager
+    SceneManager* scnMgr = root->createSceneManager(DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "Main");
 
     // Initializing state machine
     ApplicationStateMachine::Singleton().ChangeState(&PickState::Singleton());
