@@ -90,7 +90,8 @@ public:
             ImTextureID     texID = std::get<1>(tools[i]);
 
             // Using the button and using callback
-            if(ImGui::ImageButton((void*)(intptr_t) texID, ImVec2(32, 32)))
+            if(ImGui::ImageButton((void*)(intptr_t) texID, ImVec2(32, 32)) &&
+                std::get<2>(tools[i]) != nullptr)
                 std::get<2>(tools[i])();
         }
 

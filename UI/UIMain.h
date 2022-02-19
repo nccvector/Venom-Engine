@@ -83,16 +83,6 @@ public:
         Dockspace::getSingleton();  // Initializing dockspace
         Toolbar::getSingleton();    // Initializing toolbar
         Console::getSingleton();    // Initializing console
-
-        // Assigning callbacks to toolbar
-        Toolbar& tb = Toolbar::getSingleton();
-        tb.SetPickCallback     (&UIMain::PickCallback);
-        tb.SetMoveCallback     (&UIMain::MoveCallback);
-        tb.SetRotateCallback   (&UIMain::RotateCallback);
-        tb.SetScaleCallback    (&UIMain::ScaleCallback);
-        tb.SetObjectCallback   (&UIMain::ObjectCallback);
-        tb.SetCubeCallback     (&UIMain::CubeCallback);
-        tb.SetConeCallback     (&UIMain::ConeCallback);
     }
 
     void Draw()
@@ -157,61 +147,6 @@ public:
         colors[ImGuiCol_TitleBgCollapsed] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
     }
 
-    static void PickCallback()
-    {
-        // Switching state
-        ApplicationStateMachine::Singleton().ChangeState(&PickState::Singleton());
-
-        Console::getSingleton().AddLog("PICK TOOL EVENT");
-    }
-
-    static void MoveCallback()
-    {
-        // Switching state
-        ApplicationStateMachine::Singleton().ChangeState(&MoveState::Singleton());
-
-        Console::getSingleton().AddLog("MOVE TOOL EVENT");
-    }
-
-    static void RotateCallback()
-    {
-        // Switching state
-        ApplicationStateMachine::Singleton().ChangeState(&RotateState::Singleton());
-
-        Console::getSingleton().AddLog("ROTATE TOOL EVENT");
-    }
-
-    static void ScaleCallback()
-    {
-        // Switching state
-        ApplicationStateMachine::Singleton().ChangeState(&ScaleState::Singleton());
-
-        Console::getSingleton().AddLog("SCALE TOOL EVENT");
-    }
-
-    static void ObjectCallback()
-    {
-        Console::getSingleton().AddLog("OBJECT TOOL EVENT");
-
-        // // Create some random ogre object at origin
-        // Ogre::SceneManager* scnMgr = UIMain::m_root->getSceneManager("Main");
-
-        // // Creating an ogre entity and attaching to scene
-        // Ogre::Entity* ogreEntity = scnMgr->createEntity("ogrehead.mesh");
-        // Ogre::SceneNode* ogreNode = scnMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0, 50, 0));
-        // ogreNode->attachObject(ogreEntity);
-
-    }
-
-    static void CubeCallback()
-    {
-        Console::getSingleton().AddLog("CUBE TOOL EVENT");
-    }
-
-    static void ConeCallback()
-    {
-        Console::getSingleton().AddLog("CONE TOOL EVENT");
-    }
 };
 
 }

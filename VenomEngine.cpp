@@ -1,7 +1,7 @@
 // SYSTEM INCLUDES
 #include "Application.h"
 
-using namespace Venom::Application;
+using namespace Venom::App;
 
 int main(int argc, char **argv)
 {

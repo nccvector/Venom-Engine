@@ -18,5 +18,8 @@ include_directories(
 )
 
 # Adding my gui sample exe
-add_executable(${PROJECT_NAME} VenomEngine.cpp)
+add_executable(${PROJECT_NAME} 
+    VenomEngine.cpp
+    Application/Application.cpp
+    )
 target_link_libraries(${PROJECT_NAME} OgreBites)
