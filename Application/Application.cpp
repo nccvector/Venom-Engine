@@ -77,8 +77,9 @@ bool Application::frameStarted(const Ogre::FrameEvent& evt)
 
 bool Application::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
+    // Processing states
     // Call update of current state
-    ApplicationStateMachine::Singleton().GetCurrentState()->Update();
+    ApplicationStateMachine::Singleton().GetCurrentState()->frameRendered(evt);
 
     return true;
 }
@@ -124,10 +125,6 @@ void Application::setup()
 
     // Creating and Initializing sceneManager pointer
     sceneManager = root->createSceneManager(DefaultSceneManagerFactory::FACTORY_TYPE_NAME, "Main");
-
-    // Initializing raySceneQuery
-    raySceneQuery = sceneManager->createRayQuery(Ogre::Ray(), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK);
-    raySceneQuery->setSortByDistance(true);
 
     // Initializing state machine
     ApplicationStateMachine::Singleton().ChangeState(&PickState::Singleton());

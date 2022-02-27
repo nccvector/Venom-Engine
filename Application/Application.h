@@ -75,8 +75,7 @@ public:
     Ogre::Root* root;
     Ogre::SceneManager* sceneManager;
     Ogre::Camera* camera;
-    Ogre::RaySceneQuery* raySceneQuery;
-    Ogre::RaySceneQueryResult* raySceneQueryResult;
+    Ogre::SceneNode* selectedObj;
 
     static Application& Singleton()
     {

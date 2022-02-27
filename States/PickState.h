@@ -21,6 +21,8 @@ public:
 
     bool mousePressed(const OgreBites::MouseButtonEvent& evt) override;
 
+    void frameRendered(const Ogre::FrameEvent& evt) override;
+
     void Update() override;
 
     void Exit() override;

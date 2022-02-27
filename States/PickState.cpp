@@ -16,14 +16,21 @@ void PickState::Enter()
 
 bool PickState::mousePressed(const MouseButtonEvent& evt)
 {
+    // Getting the application handle
+    Application& app = Application::Singleton();
+
+    
+
+    // Creating ray scene query object
+    Ogre::RaySceneQuery* rsq = app.sceneManager->createRayQuery(
+        Ogre::Ray(), Ogre::SceneManager::WORLD_GEOMETRY_TYPE_MASK
+    );
+    
     // Cast a ray into the scene every time left click is pressed
     Ogre::Ray ray(
         Ogre::Vector3(0, 0, 0),
         Ogre::Vector3(0, 0 ,0)
     );
-
-    // Getting the application handle
-    Application& app = Application::Singleton();
 
     // Getting the camera to world ray
     // coords must be uv's [0 to 1]
@@ -33,24 +40,40 @@ bool PickState::mousePressed(const MouseButtonEvent& evt)
         &ray);
 
     // Assinging the query ray
-    app.raySceneQuery->setRay(ray);
+    rsq->setRay(ray);
+    rsq->setSortByDistance(true);
 
     // Check the intersections
-    if(app.raySceneQuery->execute().size() > 0)
+    if(rsq->execute().size() > 0)
     {
         Console::getSingleton().AddLog("HIT!");
-        // Finding the closest object from query result
-        app.raySceneQueryResult = &app.raySceneQuery->getLastResults();
 
-        // Do something with the results
-        // Enable the bounding volume of the object
-        (*app.raySceneQueryResult)[0].movable->getParentSceneNode()->showBoundingBox(true);
+        // Getting the results 
+        Ogre::RaySceneQueryResult result = rsq->getLastResults();
+
+        std::string sz = std::to_string(result.size());
+        Console::getSingleton().AddLog(&sz[0]);
+
+        // Deselect previous object
+        if(app.selectedObj)
+            app.selectedObj->showBoundingBox(false);
+
+        // Update selected object
+        app.selectedObj = result[0].movable->getParentSceneNode();
+
+        // Selecting the current object
+        app.selectedObj->showBoundingBox(true);
     }
 
     std::string msg = "PickState::" + std::to_string(evt.x);
     Console::getSingleton().AddLog(&msg[0]);
 
     return true;
+}
+
+void PickState::frameRendered(const Ogre::FrameEvent& evt)
+{
+    Console::getSingleton().AddLog("Pick::FrameUpdate");
 }
 
 void PickState::Update()
