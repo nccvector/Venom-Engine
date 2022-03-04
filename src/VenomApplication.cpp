@@ -1,3 +1,19 @@
+/**
+ * Copyright 2020 Nghia Truong <nghiatruong.vn@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "DrawableObjects/PickableObject.h"
 #include "VenomApplication.h"
 
@@ -12,7 +28,6 @@ using namespace Magnum::Math::Literals;
 /****************************************************************************************************/
 VenomApplication::VenomApplication(const Arguments& arguments) :
     PickableApplication{"Graphics Template Application ", arguments} {
-
     m_MeshSphere = MeshTools::compile(Primitives::icosphereSolid(3));
 
     for(size_t i = 0; i < 8; ++i) {
@@ -37,7 +52,6 @@ VenomApplication::VenomApplication(const Arguments& arguments) :
 /****************************************************************************************************/
 void VenomApplication::drawEvent() {
     GL::defaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
-
     ImGuiApplication::beginFrame();
 
     /* Update camera */
@@ -60,12 +74,34 @@ void VenomApplication::drawEvent() {
     m_FrameBuffer.mapForRead(GL::Framebuffer::ColorAttachment{ 0 });
     GL::AbstractFramebuffer::blit(m_FrameBuffer, GL::defaultFramebuffer,
                                   { {}, m_FrameBuffer.viewport().size() }, GL::FramebufferBlit::Color);
-    
-    // Drawing ImGui
-    ImGuiApplication::OnDraw();
+
+    /* Menu for controllers */
+    if(m_bShowMenu) {
+        showMenuHeader();
+        showMenuFooter();
+    }
+
+    /* Manipulate nodes' transformation */
+    PickableObject* selectedPoint = PickableObject::selectedObj();
+    if(selectedPoint) {
+        if(selectedPoint->isSelectable()
+           && selectedPoint->isMovable()) {
+            ImGui::Begin("Editor");
+            std::string str = "Point: #" + std::to_string(selectedPoint->idx());
+            ImGui::Text("%s", str.c_str());
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            Matrix4 objMat = selectedPoint->transformation();
+            if(editPointTransformation(objMat)) {
+                selectedPoint->setTransformation(objMat);                       /* Update drawable transformation */
+                setPointTransformation(selectedPoint->idx(), objMat, m_Points); /* Update real data point */
+            }
+            ImGui::End();
+        }
+    }
 
     ImGuiApplication::endFrame();
-    
     swapBuffers();
     redraw();
 }

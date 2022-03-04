@@ -1,4 +1,21 @@
+/**
+ * Copyright 2020 Nghia Truong <nghiatruong.vn@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "Application/PickableApplication.h"
+#include "DrawableObjects/PickableObject.h"
 
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/GL/PixelFormat.h>
@@ -99,52 +116,15 @@ void PickableApplication::mousePressEvent(MouseEvent& event) {
 }
 
 /****************************************************************************************************/
-bool PickableApplication::editPointTransformation(PickableObject* object) {
+bool PickableApplication::editPointTransformation(Matrix4& objMat) {
     const auto camMat = m_Camera->viewMatrix();
     const auto prjMat = m_Camera->camera().projectionMatrix();
     ImGuizmo::BeginFrame();
-
-    // APPLYING GUI TRANSFORMS
-    Vector3 translation = object->translation();
-    Vector3 scale = object->scaling();
-    Vector3 eulerAngles = Vector3(object->rotation().toEuler());
-    eulerAngles *= 180.0f / M_PI;
-
-    bool bEdited = ImGui::InputFloat3("Position", translation.data(), "%.4f", 3);
-    bEdited |= ImGui::InputFloat3("Rotation", eulerAngles.data(), "%.4f", 3);
-    bEdited |= ImGui::InputFloat3("Scale", scale.data(), "%.4f", 3);
-
-    object->setTranslation(translation);
-    object->setScaling(scale);
-    Rad ax{eulerAngles.data()[0] * (float)M_PI / 180.0f};
-    Rad ay{eulerAngles.data()[1] * (float)M_PI / 180.0f};
-    Rad az{eulerAngles.data()[2] * (float)M_PI / 180.0f};
-    Matrix4 frot = Matrix4::rotationZ(az) * Matrix4::rotationY(ay) * Matrix4::rotationX(ax);
-    object->setRotation(Quaternion::fromMatrix(Matrix3(frot)));
-
-    // APPLYING GIZMO TRANSFORMS
-
-    Matrix4 tempTrans = object->transformation();
-
-    // ImGuizmo::Manipulate(camMat.data(), prjMat.data(),
-    //                      ImGuizmo::SCALE, ImGuizmo::LOCAL,
-    //                      tempTrans.data(),
-    //                      nullptr, nullptr, nullptr, nullptr);
-
-    // ImGuizmo::Manipulate(camMat.data(), prjMat.data(),
-    //                      ImGuizmo::ROTATE, ImGuizmo::LOCAL,
-    //                      tempTrans.data(),
-    //                      nullptr, nullptr, nullptr, nullptr);
-
+    bool bEdited = ImGui::InputFloat3("Position", &objMat.data()[12], 3);
     ImGuizmo::Manipulate(camMat.data(), prjMat.data(),
-                         ImGuizmo::TRANSLATE, ImGuizmo::LOCAL,
-                         tempTrans.data(),
+                         ImGuizmo::TRANSLATE, ImGuizmo::WORLD,
+                         objMat.data(),
                          nullptr, nullptr, nullptr, nullptr);
-
-    object->setTranslation(tempTrans.translation());
-    object->setRotation(Quaternion::fromMatrix(tempTrans.rotation()));
-    object->setScaling(tempTrans.scaling());
-
     return bEdited || ImGuizmo::IsUsing();
 }
 
