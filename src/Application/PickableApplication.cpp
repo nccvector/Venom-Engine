@@ -104,9 +104,16 @@ bool PickableApplication::editPointTransformation(Matrix4& objMat) {
     ImGuizmo::BeginFrame();
 
     // Checking imgui fields
-    bool bEdited = ImGui::InputFloat3("Position", objMat.translation().data(), "%.2f");
-    bEdited |= ImGui::InputFloat3("Rotation", objMat.rotation().data(), "%.2f");
-    bEdited |= ImGui::InputFloat3("Scale", objMat.scaling().data(), "%.2f");
+    float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+    ImGuizmo::DecomposeMatrixToComponents(objMat.data(), matrixTranslation, matrixRotation, matrixScale);
+
+    bool bEdited = ImGui::InputFloat3("Position", matrixTranslation, "%.2f");
+    bEdited |= ImGui::InputFloat3("Rotation", matrixRotation, "%.2f");
+    bEdited |= ImGui::InputFloat3("Scale", matrixScale, "%.2f");
+
+    // Re-compose the m16 matrix
+    ImGuizmo::RecomposeMatrixFromComponents(
+        matrixTranslation, matrixRotation, matrixScale, objMat.data());
 
     // // Updating objMat
     // objMat.rotationZ(objMat.rotation().z).scaling(objMat.scaling());
