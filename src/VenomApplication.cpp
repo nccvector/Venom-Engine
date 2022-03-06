@@ -52,7 +52,10 @@ VenomApplication::VenomApplication(const Arguments& arguments) :
 /****************************************************************************************************/
 void VenomApplication::drawEvent() {
     GL::defaultFramebuffer.clear(GL::FramebufferClear::Color | GL::FramebufferClear::Depth);
+
+    // Beginning the imgui frame
     ImGuiApplication::beginFrame();
+    ImGuiApplication::beginDockspace();
 
     /* Update camera */
     m_Camera->update();
@@ -101,6 +104,8 @@ void VenomApplication::drawEvent() {
         }
     }
 
+    // Ending the imgui frame
+    ImGuiApplication::endDockspace();
     ImGuiApplication::endFrame();
     swapBuffers();
     redraw();

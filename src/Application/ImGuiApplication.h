@@ -22,6 +22,11 @@ protected:
     void beginFrame();
     void endFrame();
 
+    void setTheme();
+
+    void beginDockspace();
+    void endDockspace();
+
     void showMenuHeader();
     void showMenuFooter(bool bButtonResetCamera = true);
 
