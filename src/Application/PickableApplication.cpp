@@ -1,19 +1,3 @@
-/**
- * Copyright 2020 Nghia Truong <nghiatruong.vn@gmail.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 #include "Application/PickableApplication.h"
 #include "DrawableObjects/PickableObject.h"
 
@@ -120,7 +104,7 @@ bool PickableApplication::editPointTransformation(Matrix4& objMat) {
     const auto camMat = m_Camera->viewMatrix();
     const auto prjMat = m_Camera->camera().projectionMatrix();
     ImGuizmo::BeginFrame();
-    bool bEdited = ImGui::InputFloat3("Position", &objMat.data()[12], 3);
+    bool bEdited = ImGui::InputFloat3("Position", &objMat.data()[12], "%.3");
     ImGuizmo::Manipulate(camMat.data(), prjMat.data(),
                          ImGuizmo::TRANSLATE, ImGuizmo::WORLD,
                          objMat.data(),
