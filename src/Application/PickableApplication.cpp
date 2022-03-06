@@ -5,8 +5,6 @@
 #include <Magnum/GL/PixelFormat.h>
 #include <Magnum/Image.h>
 
-#include <ImGuizmo.h>
-
 /****************************************************************************************************/
 PickableApplication::PickableApplication(const std::string& title, const Arguments& arguments,
                                          size_t indexDataSize, const Vector2i& defaultWindowSize) :
@@ -104,9 +102,17 @@ bool PickableApplication::editPointTransformation(Matrix4& objMat) {
     const auto camMat = m_Camera->viewMatrix();
     const auto prjMat = m_Camera->camera().projectionMatrix();
     ImGuizmo::BeginFrame();
-    bool bEdited = ImGui::InputFloat3("Position", &objMat.data()[12], "%.3");
+
+    // Checking imgui fields
+    bool bEdited = ImGui::InputFloat3("Position", objMat.translation().data(), "%.2f");
+    bEdited |= ImGui::InputFloat3("Rotation", objMat.rotation().data(), "%.2f");
+    bEdited |= ImGui::InputFloat3("Scale", objMat.scaling().data(), "%.2f");
+
+    // // Updating objMat
+    // objMat.rotationZ(objMat.rotation().z).scaling(objMat.scaling());
+
     ImGuizmo::Manipulate(camMat.data(), prjMat.data(),
-                         ImGuizmo::TRANSLATE, ImGuizmo::WORLD,
+                         m_currentOperation, ImGuizmo::WORLD,
                          objMat.data(),
                          nullptr, nullptr, nullptr, nullptr);
     return bEdited || ImGuizmo::IsUsing();

@@ -10,6 +10,8 @@
 
 #include <unordered_map>
 
+#include <ImGuizmo.h>
+
 /****************************************************************************************************/
 class PickableApplication : public ImGuiApplication  {
 public:
@@ -26,6 +28,7 @@ protected:
                                 Containers::Array<Vector3>& points);
 
     /* Object index format */
+    ImGuizmo::OPERATION m_currentOperation = ImGuizmo::TRANSLATE;     // Current imguizmo operation
     GL::RenderbufferFormat               m_IndexFormat { GL::RenderbufferFormat::R16UI };
     PixelFormat                          m_PixelFormat { PixelFormat::R16UI };
     std::unordered_map<uint32_t, size_t> m_mDrawableIdxToPointIdx;

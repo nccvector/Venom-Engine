@@ -33,7 +33,8 @@ VenomApplication::VenomApplication(const Arguments& arguments) :
     for(size_t i = 0; i < 8; ++i) {
         const Vector3 tmpPos = Vector3(std::rand(), std::rand(), std::rand()) /
                                Float(RAND_MAX);
-        arrayAppend(m_Points,         Containers::InPlaceInit, tmpPos * 2.0f - Vector3{ 1.0f });
+                               
+        arrayAppend(m_Points, Containers::InPlaceInit, tmpPos * 2.0f - Vector3{ 1.0f });
 
         arrayAppend(m_DrawablePoints, Containers::InPlaceInit,
                     new PickableObject{ m_SphereShader,
@@ -84,6 +85,10 @@ void VenomApplication::drawEvent() {
         showMenuFooter();
     }
 
+
+    // Display toolbar
+    drawToolbar();
+
     /* Manipulate nodes' transformation */
     PickableObject* selectedPoint = PickableObject::selectedObj();
     if(selectedPoint) {
@@ -109,4 +114,22 @@ void VenomApplication::drawEvent() {
     ImGuiApplication::endFrame();
     swapBuffers();
     redraw();
+}
+
+void VenomApplication::drawToolbar()
+{
+    ImGui::Begin("Toolbar");
+    
+    ImGui::Button("Pick");
+    
+    if(ImGui::Button("Move"))
+        m_currentOperation = ImGuizmo::TRANSLATE;
+    
+    if(ImGui::Button("Rotate"))
+        m_currentOperation = ImGuizmo::ROTATE;
+
+    if(ImGui::Button("Scale"))
+        m_currentOperation = ImGuizmo::SCALE;
+
+    ImGui::End();
 }

@@ -30,6 +30,7 @@ public:
 
 protected:
     void drawEvent() override;
+    void drawToolbar();
 
     /* Draw pickable spheres */
     Containers::Array<Vector3>         m_Points;
