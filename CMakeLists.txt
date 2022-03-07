@@ -1,54 +1,60 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.4)
+project(VenomEngine)
 
-project(VenomEngine VERSION 0.1 LANGUAGES CXX)
+set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/ext/imgui" ${CMAKE_PREFIX_PATH})
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/ext/modules" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/ext/magnum-integration/modules" ${CMAKE_MODULE_PATH})
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
+set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# SETTING IMGUI OPTION
+set(WITH_IMGUI ON CACHE BOOL "" FORCE) # Magnum integration
+# set(WITH_SDL2APPLICATION ON CACHE BOOL "" FORCE)
+set(WITH_GLFWAPPLICATION ON CACHE BOOL "" FORCE)
 
-# Finding Qt
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+# Add Corrade as a subproject
+add_subdirectory(ext/corrade EXCLUDE_FROM_ALL)
+add_subdirectory(ext/magnum EXCLUDE_FROM_ALL)
+add_subdirectory(ext/magnum-integration EXCLUDE_FROM_ALL)
 
-# Setting project sources
-set(APP "VenomEngine")
- 
-set(HDRS
-	src/QTOgreWindow.h
-	src/SdkQtCameraMan.h
+## Adding ImGuizmo and include folder
+include_directories(${PROJECT_SOURCE_DIR}/ext/ImGuizmo)
+include_directories(${PROJECT_SOURCE_DIR}/src)
+
+# FINDING AND LINKING
+find_package(Corrade REQUIRED Main)
+find_package(Magnum REQUIRED
+    GL
+    GlfwApplication
+    MeshTools
+    Primitives
+    SceneGraph
+    Shaders
 )
- 
-set(SRCS
-	src/QTOgreWindow.cpp
-    src/main.cpp
-    src/UI/MainWindow.cpp
-    ext/BreezeThemes/breeze.qrc
+find_package(MagnumIntegration REQUIRED ImGui)
+
+# Getting files from include
+file(GLOB_RECURSE SRC_H_FILES ${PROJECT_SOURCE_DIR}/src/*.h)
+file(GLOB_RECURSE SRC_CPP_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+
+# CREATING EXECUTABLE
+add_executable(${PROJECT_NAME}
+    ${PROJECT_SOURCE_DIR}/ext/ImGuizmo/ImGuizmo.cpp
+    ${SRC_H_FILES}
+    ${SRC_CPP_FILES}
 )
 
-# Setting include directories
-include_directories(
-    src
-    src/UI
-    src/Shaders
-    ext/eigen
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    Corrade::Main
+    Magnum::Application
+    Magnum::GL
+    Magnum::Magnum
+    Magnum::MeshTools
+    Magnum::Primitives
+    Magnum::SceneGraph
+    Magnum::Shaders
+    MagnumIntegration::ImGui
 )
 
-# Ogre libraries linking
-include("tools/cmake/common.cmake")
-
-# Copying streaming assets
-file(GLOB StyleSheets ${CMAKE_CURRENT_SOURCE_DIR}/assets/*.qss)
-foreach(file ${StyleSheets})
-    configure_file(${file} ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-endforeach()
-
-# Copying streaming assets
-file(GLOB Configs ${CMAKE_CURRENT_SOURCE_DIR}/*.cfg)
-foreach(file ${Configs})
-    configure_file(${file} ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-endforeach()
+# add_subdirectory(src)
