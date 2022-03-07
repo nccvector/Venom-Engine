@@ -29,8 +29,13 @@ public:
     explicit VenomApplication(const Arguments& arguments);
 
 protected:
+
+    // Overrides
     void drawEvent() override;
+
+    // Members
     void drawToolbar();
+    void drawHeirarchy();
 
     /* Draw pickable spheres */
     Containers::Array<Vector3>         m_Points;
