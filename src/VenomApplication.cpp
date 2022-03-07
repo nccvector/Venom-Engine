@@ -89,6 +89,9 @@ void VenomApplication::drawEvent() {
     // Display toolbar
     drawToolbar();
 
+    // Dispaly heirarchy
+    drawHeirarchy();
+
     /* Manipulate nodes' transformation */
     PickableObject* selectedPoint = PickableObject::selectedObj();
     if(selectedPoint) {
@@ -130,6 +133,49 @@ void VenomApplication::drawToolbar()
 
     if(ImGui::Button("Scale"))
         m_currentOperation = ImGuizmo::SCALE;
+
+    ImGui::End();
+}
+
+void recurseChildren(PickableObject* object)
+{
+    // Return if not pickable object
+    if(object->idx() == 0)
+        return;
+    
+    ImGuiTreeNodeFlags nodeFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
+    if(object == PickableObject::selectedObj())
+        nodeFlags |= ImGuiTreeNodeFlags_Selected;
+    
+    // Draw Ex node if its deepest
+    if(object->children().isEmpty())
+        nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+        
+    // Draw Expandable node otherwise
+    if(ImGui::TreeNodeEx(&(object->name() + "#" + std::to_string(object->idx()))[0], nodeFlags))
+    {
+        // Recurse for all children
+        for(auto &child : object->children())
+            recurseChildren((PickableObject*)&child);
+
+        // Finish Node
+        ImGui::TreePop();
+    }
+
+    // If the trees were opened
+    if(ImGui::IsItemClicked())
+        PickableObject::updateSelectedObject(object->idx());
+
+    return;
+}
+
+void VenomApplication::drawHeirarchy()
+{
+    ImGui::Begin("Heirarchy");
+
+    // Call recursion for all children of scene
+    for(auto &child : m_Scene.children())
+        recurseChildren((PickableObject*)&child);
 
     ImGui::End();
 }

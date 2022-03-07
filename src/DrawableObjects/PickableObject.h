@@ -33,7 +33,8 @@ public:
     explicit PickableObject(Shaders::Phong& shader, const Color3& color,
                             GL::Mesh& mesh,
                             Scene3D* parent,
-                            SceneGraph::DrawableGroup3D* drawables);
+                            SceneGraph::DrawableGroup3D* drawables,
+                            std::string name="Object");
     virtual ~PickableObject() override;
 
     virtual void draw(const Matrix4& transformationMatrix, SceneGraph::Camera3D& camera) override;
@@ -44,6 +45,7 @@ public:
     PickableObject& setSelectable(bool bStatus) { m_bSelectable = bStatus; return *this; }
 
     uint32_t idx() const { return m_idx; }
+    std::string name() const { return m_name; }
     bool isSelectable() const { return m_bSelectable; }
     bool isSelected() const { return m_bSelected; }
     bool isMovable() const { return m_bMovable; }
@@ -60,6 +62,7 @@ private:
     bool     m_bSelected { false };
     bool     m_bMovable { true };
     uint32_t m_idx;
+    std::string m_name;
 
     Shaders::Phong& m_Shader;
     Color3          m_Color;

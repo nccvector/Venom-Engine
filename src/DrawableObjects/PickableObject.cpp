@@ -23,11 +23,13 @@
 /****************************************************************************************************/
 PickableObject::PickableObject(Shaders::Phong& shader, const Color3& color,
                                GL::Mesh& mesh, Scene3D* parent,
-                               SceneGraph::DrawableGroup3D* drawables) :
+                               SceneGraph::DrawableGroup3D* drawables,
+                               std::string name) :
     Object3D{parent},
     SceneGraph::Drawable3D{*this, drawables},
     m_bSelected{false},
     m_idx{getUniqueID()},
+    m_name {name},
     m_Shader(shader),
     m_Color{color},
     m_Mesh(mesh) {
