@@ -32,4 +32,4 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PUBLIC raylib)
 
 # Copying resources
-file(COPY resources DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY res DESTINATION ${CMAKE_BINARY_DIR})

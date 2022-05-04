@@ -16,7 +16,7 @@ public:
         Camera.offset.y = GetScreenHeight() / 2.0f;
 
 		ViewTexture = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
-        ImageTexture = LoadTexture("resources/heightmap.png");
+        ImageTexture = LoadTexture("res/heightmap.png");
 
 		UpdateRenderTexture();
 	}
