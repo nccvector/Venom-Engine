@@ -1,60 +1,30 @@
-cmake_minimum_required(VERSION 3.4)
-project(VenomEngine)
+cmake_minimum_required(VERSION 3.0)
 
-set(CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/ext/imgui" ${CMAKE_PREFIX_PATH})
+project(raylibproj)
 
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/ext/modules" ${CMAKE_MODULE_PATH})
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/ext/magnum-integration/modules" ${CMAKE_MODULE_PATH})
+# Adding raylib as a library
+add_subdirectory(ext/raylib)
 
-set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
+# Adding imgui sources
+file(GLOB ImGuiSources ext/imgui/*.cpp)
 
-# SETTING IMGUI OPTION
-set(WITH_IMGUI ON CACHE BOOL "" FORCE) # Magnum integration
-# set(WITH_SDL2APPLICATION ON CACHE BOOL "" FORCE)
-set(WITH_GLFWAPPLICATION ON CACHE BOOL "" FORCE)
-
-# Add Corrade as a subproject
-add_subdirectory(ext/corrade EXCLUDE_FROM_ALL)
-add_subdirectory(ext/magnum EXCLUDE_FROM_ALL)
-add_subdirectory(ext/magnum-integration EXCLUDE_FROM_ALL)
-
-## Adding ImGuizmo and include folder
-include_directories(${PROJECT_SOURCE_DIR}/ext/ImGuizmo)
-include_directories(${PROJECT_SOURCE_DIR}/src)
-
-# FINDING AND LINKING
-find_package(Corrade REQUIRED Main)
-find_package(Magnum REQUIRED
-    GL
-    GlfwApplication
-    MeshTools
-    Primitives
-    SceneGraph
-    Shaders
+# Adding all includes
+include_directories(
+    ext
+    ext/imgui 
+    ext/imgui/backends
+    ext/raylib/src/external 
+    ext/raylib/src
 )
-find_package(MagnumIntegration REQUIRED ImGui)
 
-# Getting files from include
-file(GLOB_RECURSE SRC_H_FILES ${PROJECT_SOURCE_DIR}/src/*.h)
-file(GLOB_RECURSE SRC_CPP_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
-
-# CREATING EXECUTABLE
 add_executable(${PROJECT_NAME}
-    ${PROJECT_SOURCE_DIR}/ext/ImGuizmo/ImGuizmo.cpp
-    ${SRC_H_FILES}
-    ${SRC_CPP_FILES}
+    main.cpp
+    ext/rlImGui.cpp
+    ${ImGuiSources}
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    Corrade::Main
-    Magnum::Application
-    Magnum::GL
-    Magnum::Magnum
-    Magnum::MeshTools
-    Magnum::Primitives
-    Magnum::SceneGraph
-    Magnum::Shaders
-    MagnumIntegration::ImGui
-)
+# Linking to libs
+target_link_libraries(${PROJECT_NAME} PUBLIC raylib)
 
-# add_subdirectory(src)
+# Copying resources
+file(COPY resources DESTINATION ${CMAKE_BINARY_DIR})
