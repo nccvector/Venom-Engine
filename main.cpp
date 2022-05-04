@@ -326,9 +326,11 @@ int main(int argc, char* argv[])
 	int screenHeight = 720;
 
 	SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
-	InitWindow(screenWidth, screenHeight, "raylib-Extras [ImGui] example - ImGui Demo");
-	SetTargetFPS(144);
+	InitWindow(screenWidth, screenHeight, "ImGui Demo");
+	SetTargetFPS(60);
 	rlImGuiSetup(true);
+
+    // Windows can only be dragged from title bar
 	ImGui::GetIO().ConfigWindowsMoveFromTitleBarOnly = true;
 
 	ImageViewer.Setup();
