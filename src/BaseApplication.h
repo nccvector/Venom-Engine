@@ -1,3 +1,5 @@
+#pragma once
+
 #include "raylib.h"
 #include "raymath.h"
 
@@ -7,8 +9,9 @@
 
 class BaseApplication
 {
+    bool Quit;
+
 public:
-    bool Quit = false;
 
     BaseApplication(const char* title, const Vector2& defaultWindowSize=Vector2{800, 600})
     {
@@ -43,7 +46,6 @@ public:
     virtual void exit()
     {
         rlImGuiShutdown();
-        CloseWindow();
     }
 
     virtual void run()
@@ -57,5 +59,11 @@ public:
         }
 
         exit();
+        CloseWindow();
+    }
+
+    virtual void quit()
+    {
+        Quit = true;
     }
 };

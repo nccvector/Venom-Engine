@@ -1,4 +1,9 @@
 #include "Application.h"
+#include "ImageViewWindow.h"
+#include "SceneViewWindow.h"
+
+ImageViewerWindow ivw;
+SceneViewWindow svw;
 
 void Application::DoMainMenu()
 {
@@ -7,7 +12,7 @@ void Application::DoMainMenu()
         if (ImGui::BeginMenu("File"))
         {
             if (ImGui::MenuItem("Exit"))
-                Quit = true;
+                quit();
 
             ImGui::EndMenu();
         }
@@ -27,10 +32,38 @@ void Application::DoMainMenu()
 Application::Application(const char* title, const Vector2& defaultWindowSize) :
     BaseApplication(title, defaultWindowSize)
 {
+    ivw.Setup();
+    ivw.Open = true;
 
+    svw.Setup();
+    svw.Open = true;
+}
+
+void Application::preUpdate()
+{
+    // Append some logic before base class
+    ivw.Update();
+    svw.Update();
+
+    // Pre-update setup of base class
+    BaseApplication::preUpdate();
 }
 
 void Application::update()
 {
     DoMainMenu();
+
+    if(ivw.Open)
+        ivw.Show();
+    
+    if(svw.Open)
+        svw.Show();
+}
+
+void Application::exit()
+{
+    BaseApplication::exit();
+
+    ivw.Shutdown();
+    svw.Shutdown();
 }
