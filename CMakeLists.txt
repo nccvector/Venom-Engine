@@ -10,6 +10,7 @@ file(GLOB ImGuiSources ext/imgui/*.cpp)
 
 # Adding all includes
 include_directories(
+    src
     ext
     ext/imgui 
     ext/imgui/backends
@@ -17,8 +18,12 @@ include_directories(
     ext/raylib/src
 )
 
+# Source
+file(GLOB SRCS src/*.cpp)
+
 add_executable(${PROJECT_NAME}
     main.cpp
+    ${SRCS}
     ext/rlImGui.cpp
     ${ImGuiSources}
 )
