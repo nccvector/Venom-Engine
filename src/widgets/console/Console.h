@@ -8,7 +8,9 @@
 class Console : public Widget
 {
 public:
-    Console(const char* title="Console") : Widget(title) { }
+
+    Console(const char* title="Console") : Widget {title} { }
+
     static Console& get()
     {
         static Console instance;

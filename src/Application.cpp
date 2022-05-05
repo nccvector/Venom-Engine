@@ -46,9 +46,7 @@ Application::Application(const char* title, const Vector2& defaultWindowSize) :
 void Application::preUpdate()
 {
     // Append some logic before base class
-    ivp.update();
-    svp.update();
-    console.update();
+    // ...
 
     // Pre-update setup of base class
     BaseApplication::preUpdate();
@@ -59,13 +57,13 @@ void Application::update()
     DoMainMenu();
 
     if(ivp.Open)
-        ivp.finalShow();
+        ivp._update();
     
     if(svp.Open)
-        svp.finalShow();
+        svp._update();
     
     if(console.Open)
-        console.show();
+        console._update();
 
     // LOG("I am Update");
     // Console::get().AddLog("YO");

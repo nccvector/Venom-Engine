@@ -21,6 +21,21 @@ void ImageViewport::setup()
 
 void ImageViewport::show()
 {
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
+
+    ImGui::Begin(mTitle, &Open, ImGuiWindowFlags_NoScrollbar);
+    Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
+
+    Size = ImGui::GetContentRegionAvail();
+    
+    ViewRect = { 0 };
+    ViewRect.x = ViewTexture.texture.width / 2 - Size.x / 2;
+    ViewRect.y = ViewTexture.texture.height / 2 - Size.y / 2;
+    ViewRect.width = Size.x;
+    ViewRect.height = -Size.y;
+
+    //================================================================================ 
     // Add optional content inside the content region
     if (ImGui::BeginChild("Toolbar", ImVec2(ImGui::GetContentRegionAvail().x, 25)))
     {
@@ -55,6 +70,11 @@ void ImageViewport::show()
         ImGui::TextUnformatted(TextFormat("Camera target X%f Y%f", Camera.target.x, Camera.target.y));
         ImGui::EndChild();
     }
+    //================================================================================ 
+
+    rlImGuiImageRect(&ViewTexture.texture, (int)Size.x, (int)Size.y, ViewRect);
+    ImGui::End();
+    ImGui::PopStyleVar();
 }
 
 void ImageViewport::update()

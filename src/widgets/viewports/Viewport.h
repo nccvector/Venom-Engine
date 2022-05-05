@@ -14,7 +14,7 @@ public:
     ImVec2 Size;
     Rectangle ViewRect = { 0 };
 
-    virtual void showStart()
+    virtual void show()
     {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
@@ -29,19 +29,9 @@ public:
         ViewRect.y = ViewTexture.texture.height / 2 - Size.y / 2;
         ViewRect.width = Size.x;
         ViewRect.height = -Size.y;
-    }
 
-    virtual void showEnd()
-    {
         rlImGuiImageRect(&ViewTexture.texture, (int)Size.x, (int)Size.y, ViewRect);
         ImGui::End();
         ImGui::PopStyleVar();
-    }
-
-    virtual void finalShow()
-    {
-        showStart();
-        show();
-        showEnd();
     }
 };

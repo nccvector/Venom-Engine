@@ -15,4 +15,13 @@ public:
     virtual void shutdown() = 0;
     virtual void show() = 0;
     virtual void update() = 0;
+
+    virtual void _update()
+    {
+        // Update any necessary data
+        update();
+
+        // Show the widget
+        show();
+    }
 };
