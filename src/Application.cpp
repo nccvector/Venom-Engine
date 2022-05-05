@@ -5,7 +5,7 @@
 
 ImageViewport ivp;
 SceneViewport svp;
-Console console;
+Console& console = LOG_GET();
 
 void Application::DoMainMenu()
 {
@@ -40,7 +40,6 @@ Application::Application(const char* title, const Vector2& defaultWindowSize) :
     svp.setup();
     svp.Open = true;
 
-    console.setup();
     console.Open = true;
 }
 
@@ -67,6 +66,9 @@ void Application::update()
     
     if(console.Open)
         console.show();
+
+    // LOG("I am Update");
+    // Console::get().AddLog("YO");
 }
 
 void Application::exit()

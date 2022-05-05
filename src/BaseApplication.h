@@ -7,6 +7,8 @@
 #include "rlImGui.h"
 #include "rlImGuiColors.h"
 
+#include "Console.h"
+
 class BaseApplication
 {
 protected:
@@ -16,7 +18,9 @@ public:
 
     BaseApplication(const char* title, const Vector2& defaultWindowSize=Vector2{800, 600})
     {
-        SetConfigFlags(FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
+        LOG("BaseApplication::Initializing...");
+
+        SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
         InitWindow(defaultWindowSize.x, defaultWindowSize.y, title);
         SetTargetFPS(60);
         rlImGuiSetup(true);
