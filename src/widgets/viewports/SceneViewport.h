@@ -1,13 +1,13 @@
 #pragma once
 
-#include "BaseViewWindow.h"
+#include "Viewport.h"
 
-class SceneViewWindow : public DocumentWindow
+class SceneViewport : public Viewport
 {
 public:
     Camera3D Camera = { 0 };
 
-    void Setup() override
+    void setup() override
     {
         ViewTexture = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 
@@ -24,13 +24,13 @@ public:
         SetTextureWrap(GridTexture, TEXTURE_WRAP_CLAMP);
     }
 
-    void Shutdown() override
+    void shutdown() override
     {
         UnloadRenderTexture(ViewTexture);
         UnloadTexture(GridTexture);
     }
 
-    void Show() override
+    void show() override
     {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
@@ -55,7 +55,7 @@ public:
         ImGui::PopStyleVar();
     }
 
-    void Update() override
+    void update() override
     {
         if (!Open)
             return;

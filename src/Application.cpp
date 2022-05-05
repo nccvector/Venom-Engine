@@ -1,9 +1,11 @@
 #include "Application.h"
-#include "ImageViewWindow.h"
-#include "SceneViewWindow.h"
+#include "ImageViewport.h"
+#include "SceneViewport.h"
+#include "Console.h"
 
-ImageViewerWindow ivw;
-SceneViewWindow svw;
+ImageViewport ivp;
+SceneViewport svp;
+Console console;
 
 void Application::DoMainMenu()
 {
@@ -12,7 +14,7 @@ void Application::DoMainMenu()
         if (ImGui::BeginMenu("File"))
         {
             if (ImGui::MenuItem("Exit"))
-                quit();
+                Quit = true;
 
             ImGui::EndMenu();
         }
@@ -32,18 +34,22 @@ void Application::DoMainMenu()
 Application::Application(const char* title, const Vector2& defaultWindowSize) :
     BaseApplication(title, defaultWindowSize)
 {
-    ivw.Setup();
-    ivw.Open = true;
+    ivp.setup();
+    ivp.Open = true;
 
-    svw.Setup();
-    svw.Open = true;
+    svp.setup();
+    svp.Open = true;
+
+    console.setup();
+    console.Open = true;
 }
 
 void Application::preUpdate()
 {
     // Append some logic before base class
-    ivw.Update();
-    svw.Update();
+    ivp.update();
+    svp.update();
+    console.update();
 
     // Pre-update setup of base class
     BaseApplication::preUpdate();
@@ -53,17 +59,21 @@ void Application::update()
 {
     DoMainMenu();
 
-    if(ivw.Open)
-        ivw.Show();
+    if(ivp.Open)
+        ivp.show();
     
-    if(svw.Open)
-        svw.Show();
+    if(svp.Open)
+        svp.show();
+    
+    if(console.Open)
+        console.show();
 }
 
 void Application::exit()
 {
     BaseApplication::exit();
 
-    ivw.Shutdown();
-    svw.Shutdown();
+    ivp.shutdown();
+    svp.shutdown();
+    console.shutdown();
 }
