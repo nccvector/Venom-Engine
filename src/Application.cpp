@@ -43,15 +43,6 @@ Application::Application(const char* title, const Vector2& defaultWindowSize) :
     console.Open = true;
 }
 
-void Application::preUpdate()
-{
-    // Append some logic before base class
-    // ...
-
-    // Pre-update setup of base class
-    BaseApplication::preUpdate();
-}
-
 void Application::update()
 {
     DoMainMenu();
