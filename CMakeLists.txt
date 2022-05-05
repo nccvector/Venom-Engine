@@ -11,6 +11,8 @@ file(GLOB ImGuiSources ext/imgui/*.cpp)
 # Adding all includes
 include_directories(
     src
+    src/widgets
+    src/widgets/viewports
     ext
     ext/imgui 
     ext/imgui/backends

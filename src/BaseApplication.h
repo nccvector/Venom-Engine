@@ -9,6 +9,7 @@
 
 class BaseApplication
 {
+protected:
     bool Quit;
 
 public:

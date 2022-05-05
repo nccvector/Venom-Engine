@@ -1,12 +1,12 @@
 #pragma once
 
-#include "BaseViewWindow.h"
+#include "Viewport.h"
 
-class ImageViewerWindow : public DocumentWindow
+class ImageViewport : public Viewport
 {
 public:
 
-	void Setup() override
+	void setup() override
 	{
         Camera.zoom = 1;
         Camera.target.x = 0;
@@ -16,12 +16,12 @@ public:
         Camera.offset.y = GetScreenHeight() / 2.0f;
 
 		ViewTexture = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
-        ImageTexture = LoadTexture("res/heightmap.png");
+        ImageTexture = LoadTexture("res//heightmap.png");
 
-		UpdateRenderTexture();
+		updateRenderTexture();
 	}
 
-	void Show() override
+	void show() override
 	{
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
@@ -69,7 +69,7 @@ public:
                 }
 
                 ImGui::SameLine();
-                ImGui::TextUnformatted(TextFormat("camera target X%f Y%f", Camera.target.x, Camera.target.y));
+                ImGui::TextUnformatted(TextFormat("Camera target X%f Y%f", Camera.target.x, Camera.target.y));
                 ImGui::EndChild();
             }
 
@@ -80,7 +80,7 @@ public:
         ImGui::PopStyleVar();
 	}
 
-	void Update() override
+	void update() override
 	{
         if (!Open)
             return;
@@ -130,7 +130,7 @@ public:
         if (DirtyScene)
         {
             DirtyScene = false;
-            UpdateRenderTexture();
+            updateRenderTexture();
         }
 	}
 
@@ -151,7 +151,7 @@ public:
 
     ToolMode CurrentToolMode = ToolMode::None;
 
-    void UpdateRenderTexture()
+    void updateRenderTexture()
     {
         BeginTextureMode(ViewTexture);
         ClearBackground(BLUE);
@@ -161,7 +161,7 @@ public:
         EndTextureMode();
     }
 
-    void Shutdown() override
+    void shutdown() override
     {
         UnloadRenderTexture(ViewTexture);
         UnloadTexture(ImageTexture);
