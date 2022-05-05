@@ -69,7 +69,9 @@ public:
         float period = 10;
         float magnitude = 25;
 
-        Camera.position.x = (float)(sinf(GetTime() / period) * magnitude);
+        // Input-related functions: mouse
+        if (Focused && IsMouseButtonDown(0))
+            Camera.position.x = (float)(sinf(GetTime() / period) * magnitude);
 
         BeginTextureMode(ViewTexture);
         ClearBackground(SKYBLUE);
@@ -77,7 +79,11 @@ public:
         BeginMode3D(Camera);
 
         // grid of cube trees on a plane to make a "world"
-        DrawPlane(Vector3 { 0, 0, 0 }, Vector2{ 50, 50 }, BEIGE); // simple world plane
+        if (!Focused)
+            DrawPlane(Vector3 { 0, 0, 0 }, Vector2{ 50, 50 }, BEIGE); // simple world plane
+        else
+            DrawPlane(Vector3 { 0, 0, 0 }, Vector2{ 50, 50 }, BLUE); // simple world plane
+
         float spacing = 4;
         int count = 5;
 
