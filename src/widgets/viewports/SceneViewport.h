@@ -6,6 +6,8 @@ class SceneViewport : public Viewport
 {
 public:
     Camera3D Camera = { 0 };
+    Ray PickRay = { 0 };                    // Picking line ray
+    RayCollision Collision = { 0 };
 
     void setup() override
     {
@@ -37,6 +39,28 @@ public:
 
         if (ImGui::Begin("3D View", &Open, ImGuiWindowFlags_NoScrollbar))
         {
+            Vector2 mousePos = GetMousePosition();
+            
+            ImVec2 windowMin = ImGui::GetWindowContentRegionMin();
+            ImVec2 windowPos = ImGui::GetWindowPos();
+            ImVec2 contentPos = ImVec2(windowMin.x + windowPos.x, windowMin.y + windowPos.y);
+            ImVec2 windowSize = ImGui::GetWindowSize();
+            Vector2 relMousePos = Vector2 {mousePos.x - contentPos.x, mousePos.y - contentPos.y};
+            LOG("mouse coords: %f, %f", relMousePos.x, relMousePos.y);
+
+            // Calculating ray
+            PickRay = GetMouseRay(relMousePos, Camera);
+
+            // Check collision between ray and box
+            Vector3 cubePosition = { 0.0f, 1.0f, 0.0f };
+            Vector3 cubeSize = { 200.0f, 200.0f, 200.0f };
+            Collision = GetRayCollisionBox(PickRay,
+                        (BoundingBox){  (Vector3){ cubePosition.x - cubeSize.x/2, cubePosition.y - cubeSize.y/2, cubePosition.z - cubeSize.z/2 },
+                                        (Vector3){ cubePosition.x + cubeSize.x/2, cubePosition.y + cubeSize.y/2, cubePosition.z + cubeSize.z/2 }});
+            
+            if (Collision.hit)
+                LOG("COLLIDED");
+
             Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
 
             ImVec2 size = ImGui::GetContentRegionAvail();
@@ -59,6 +83,8 @@ public:
     {
         if (!Open)
             return;
+
+
 
         if (IsWindowResized())
         {
