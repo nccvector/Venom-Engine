@@ -5,6 +5,7 @@
 class ImageViewport : public Viewport
 {
 public:
+    ImageViewport(const char* title="Image") : Viewport {title} { }
 
 	void setup() override;
     void shutdown() override;

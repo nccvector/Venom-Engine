@@ -59,10 +59,10 @@ void Application::update()
     DoMainMenu();
 
     if(ivp.Open)
-        ivp.show();
+        ivp.finalShow();
     
     if(svp.Open)
-        svp.show();
+        svp.finalShow();
     
     if(console.Open)
         console.show();

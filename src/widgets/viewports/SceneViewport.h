@@ -5,6 +5,8 @@
 class SceneViewport : public Viewport
 {
 public:
+    SceneViewport(const char* title="Scene") : Viewport {title} { }
+
     Camera3D Camera = { 0 };
     Ray PickRay = { 0 };                    // Picking line ray
     RayCollision Collision = { 0 };
@@ -34,49 +36,31 @@ public:
 
     void show() override
     {
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
+        // Vector2 mousePos = GetMousePosition();
+        
+        // ImVec2 windowMin = ImGui::GetWindowContentRegionMin();
+        // ImVec2 windowPos = ImGui::GetWindowPos();
+        // ImVec2 contentPos = ImVec2(windowMin.x + windowPos.x, windowMin.y + windowPos.y);
+        // ImVec2 windowSize = ImGui::GetWindowSize();
+        // Vector2 relMousePos = Vector2 {mousePos.x - contentPos.x, mousePos.y - contentPos.y};
+        // LOG("mouse coords: %f, %f", relMousePos.x, relMousePos.y);
 
-        if (ImGui::Begin("3D View", &Open, ImGuiWindowFlags_NoScrollbar))
-        {
-            Vector2 mousePos = GetMousePosition();
-            
-            ImVec2 windowMin = ImGui::GetWindowContentRegionMin();
-            ImVec2 windowPos = ImGui::GetWindowPos();
-            ImVec2 contentPos = ImVec2(windowMin.x + windowPos.x, windowMin.y + windowPos.y);
-            ImVec2 windowSize = ImGui::GetWindowSize();
-            Vector2 relMousePos = Vector2 {mousePos.x - contentPos.x, mousePos.y - contentPos.y};
-            LOG("mouse coords: %f, %f", relMousePos.x, relMousePos.y);
+        // // Calculating ray
+        // PickRay = GetMouseRay(relMousePos, Camera);
 
-            // Calculating ray
-            PickRay = GetMouseRay(relMousePos, Camera);
+        // // Check collision between ray and box
+        // Vector3 cubePosition = { 0.0f, 1.0f, 0.0f };
+        // Vector3 cubeSize = { 200.0f, 200.0f, 200.0f };
+        // Collision = GetRayCollisionBox(PickRay,
+        //             (BoundingBox){  (Vector3){ cubePosition.x - cubeSize.x/2, cubePosition.y - cubeSize.y/2, cubePosition.z - cubeSize.z/2 },
+        //                             (Vector3){ cubePosition.x + cubeSize.x/2, cubePosition.y + cubeSize.y/2, cubePosition.z + cubeSize.z/2 }});
+        
+        // if (Collision.hit)
+        //     LOG("COLLIDED");
 
-            // Check collision between ray and box
-            Vector3 cubePosition = { 0.0f, 1.0f, 0.0f };
-            Vector3 cubeSize = { 200.0f, 200.0f, 200.0f };
-            Collision = GetRayCollisionBox(PickRay,
-                        (BoundingBox){  (Vector3){ cubePosition.x - cubeSize.x/2, cubePosition.y - cubeSize.y/2, cubePosition.z - cubeSize.z/2 },
-                                        (Vector3){ cubePosition.x + cubeSize.x/2, cubePosition.y + cubeSize.y/2, cubePosition.z + cubeSize.z/2 }});
-            
-            if (Collision.hit)
-                LOG("COLLIDED");
+        // Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
 
-            Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
-
-            ImVec2 size = ImGui::GetContentRegionAvail();
-
-            Rectangle viewRect = { 0 };
-            viewRect.x = ViewTexture.texture.width / 2 - size.x / 2;
-            viewRect.y = ViewTexture.texture.height / 2 - size.y / 2;
-            viewRect.width = size.x;
-            viewRect.height = -size.y;
-
-            // draw the view
-            rlImGuiImageRect(&ViewTexture.texture, (int)size.x, (int)size.y, viewRect);
-
-            ImGui::End();
-        }
-        ImGui::PopStyleVar();
+        // ImVec2 size = ImGui::GetContentRegionAvail();
     }
 
     void update() override

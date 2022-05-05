@@ -21,61 +21,40 @@ void ImageViewport::setup()
 
 void ImageViewport::show()
 {
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
-
-    if (ImGui::Begin("Image Viewer", &Open, ImGuiWindowFlags_NoScrollbar))
+    // Add optional content inside the content region
+    if (ImGui::BeginChild("Toolbar", ImVec2(ImGui::GetContentRegionAvail().x, 25)))
     {
-        Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
+        ImGui::SetCursorPosX(2);
+        ImGui::SetCursorPosY(3);
 
-        ImVec2 size = ImGui::GetContentRegionAvail();
-
-        // center the scratch pad in the view
-        Rectangle viewRect = { 0 };
-        viewRect.x = ViewTexture.texture.width / 2 - size.x / 2;
-        viewRect.y = ViewTexture.texture.height / 2 - size.y / 2;
-        viewRect.width = size.x;
-        viewRect.height = -size.y;
-
-        if (ImGui::BeginChild("Toolbar", ImVec2(ImGui::GetContentRegionAvail().x, 25)))
+        if (ImGui::Button("None"))
         {
-            ImGui::SetCursorPosX(2);
-            ImGui::SetCursorPosY(3);
+            CurrentToolMode = ToolMode::None;
+        }
+        ImGui::SameLine();
 
-            if (ImGui::Button("None"))
-            {
-                CurrentToolMode = ToolMode::None;
-            }
-            ImGui::SameLine();
-
-            if (ImGui::Button("Move"))
-            {
-                CurrentToolMode = ToolMode::Move;
-            }
-
-            ImGui::SameLine();
-            switch (CurrentToolMode)
-            {
-            case ToolMode::None:
-                ImGui::TextUnformatted("No Tool");
-                break;
-            case ToolMode::Move:
-                ImGui::TextUnformatted("Move Tool");
-                break;
-            default:
-                break;
-            }
-
-            ImGui::SameLine();
-            ImGui::TextUnformatted(TextFormat("Camera target X%f Y%f", Camera.target.x, Camera.target.y));
-            ImGui::EndChild();
+        if (ImGui::Button("Move"))
+        {
+            CurrentToolMode = ToolMode::Move;
         }
 
-        rlImGuiImageRect(&ViewTexture.texture, (int)size.x, (int)size.y, viewRect);
+        ImGui::SameLine();
+        switch (CurrentToolMode)
+        {
+        case ToolMode::None:
+            ImGui::TextUnformatted("No Tool");
+            break;
+        case ToolMode::Move:
+            ImGui::TextUnformatted("Move Tool");
+            break;
+        default:
+            break;
+        }
 
-        ImGui::End();
+        ImGui::SameLine();
+        ImGui::TextUnformatted(TextFormat("Camera target X%f Y%f", Camera.target.x, Camera.target.y));
+        ImGui::EndChild();
     }
-    ImGui::PopStyleVar();
 }
 
 void ImageViewport::update()

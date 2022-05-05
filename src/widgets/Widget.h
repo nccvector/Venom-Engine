@@ -2,7 +2,12 @@
 
 class Widget
 {
+protected:
+    const char* mTitle;
+
 public:
+    Widget(const char* title) { mTitle = title; }
+
     bool Open = false;
     bool Focused = false;
 
