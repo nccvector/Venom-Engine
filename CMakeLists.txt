@@ -13,15 +13,16 @@ include_directories(
     src
     src/widgets
     src/widgets/viewports
+    src/widgets/console
     ext
     ext/imgui 
     ext/imgui/backends
-    ext/raylib/src/external 
     ext/raylib/src
+    ext/raylib/src/external 
 )
 
 # Source
-file(GLOB SRCS src/*.cpp)
+file(GLOB_RECURSE SRCS src/**.cpp)
 
 add_executable(${PROJECT_NAME}
     main.cpp

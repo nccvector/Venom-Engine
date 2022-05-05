@@ -2,9 +2,18 @@
 
 #include "Widget.h"
 
+#include<ctype.h>
+#include<stdio.h>
+
 class Console : public Widget
 {
 public:
+    static Console& get()
+    {
+        static Console instance;
+        return instance;
+    }
+
     char                  InputBuf[256];
     ImVector<char*>       Items;
     ImVector<const char*> Commands;
@@ -27,7 +36,7 @@ public:
         Commands.push_back("CLASSIFY");
         AutoScroll = true;
         ScrollToBottom = false;
-        AddLog("Welcome to Dear ImGui!");
+        AddLog("Initialized Logging");
     } 
 
     void shutdown() override
@@ -354,3 +363,7 @@ public:
         return 0;
     }
 };
+
+#define LOG_GET() Console::get()
+#define LOG_INIT() Console::get().setup()
+#define LOG(...) Console::get().AddLog(__VA_ARGS__)
