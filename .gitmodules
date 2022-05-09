@@ -1,0 +1,9 @@
+[submodule "ext/magnum"]
+	path = ext/magnum
+	url = https://github.com/nccvector/magnum.git
+[submodule "ext/imgui"]
+	path = ext/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "ext/magnum-integration"]
+	path = ext/magnum-integration
+	url = https://github.com/nccvector/magnum-integration.git
